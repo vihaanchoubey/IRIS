@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Monthly Report - IRIS</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .report-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        .report-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .report-header h1 {
+            font-size: 28px;
+            color: #1f2328;
+            margin: 0 0 10px 0;
+            font-weight: 600;
+        }
+        .report-header p {
+            color: #636c76;
+            font-size: 14px;
+            margin: 0;
+        }
+        .report-form {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #1f2328;
+            font-size: 14px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d9e0;
+            border-radius: 6px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #0969da;
+            box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
+        }
+        .form-control.file-input {
+            cursor: pointer;
+            padding: 12px;
+        }
+        .file-drop-zone {
+            border: 2px dashed #d1d9e0;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            background: #f6f8fb;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .file-drop-zone:hover {
+            border-color: #0969da;
+            background: #f0f6ff;
+        }
+        .file-drop-zone.dragover {
+            border-color: #0969da;
+            background: #f0f6ff;
+            box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
+        }
+        .file-drop-zone-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        .file-drop-zone-text {
+            color: #636c76;
+            font-size: 14px;
+            margin: 0;
+        }
+        .file-drop-zone-hint {
+            color: #8590a2;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        .file-selected {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f1f3f5;
+            border-radius: 6px;
+            display: none;
+        }
+        .file-selected.show {
+            display: block;
+        }
+        .file-selected-name {
+            color: #1f2328;
+            font-weight: 500;
+            font-size: 13px;
+        }
+        .file-selected-size {
+            color: #8590a2;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .form-help {
+            color: #8590a2;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .submit-btn {
+            background: #0969da;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        .submit-btn:hover {
+            background: #0860ca;
+            box-shadow: 0 4px 12px rgba(9, 105, 218, 0.3);
+        }
+        .submit-btn:active {
+            background: #074aaf;
+            box-shadow: 0 2px 6px rgba(9, 105, 218, 0.3);
+        }
+        .submit-btn:disabled {
+            background: #8590a2;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            display: none;
+        }
+        .alert.show {
+            display: block;
+        }
+        .alert-success {
+            background: #dafbe1;
+            color: #033a16;
+            border: 1px solid #26a641;
+        }
+        .alert-error {
+            background: #ffebe6;
+            color: #82180d;
+            border: 1px solid #da3633;
+        }
+        .alert-warning {
+            background: #fff8c5;
+            color: #3d2714;
+            border: 1px solid #d4a574;
+        }
+        .month-input-wrapper {
+            position: relative;
+        }
+        .month-input-wrapper input[type="month"] {
+            width: 100%;
+        }
+        .upload-progress {
+            display: none;
+            margin-top: 12px;
+        }
+        .upload-progress.show {
+            display: block;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #d1d9e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #0969da;
+            border-radius: 4px;
+            transition: width 0.3s;
+            width: 0%;
+        }
+        .progress-text {
+            color: #8590a2;
+            font-size: 12px;
+            margin-top: 6px;
+            text-align: right;
+        }
+        .required-indicator {
+            color: #da3633;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar"></div>
+
+    <script src="/static/js/iris-nav.js"></script>
+
+    <div class="report-container">
+        <div class="report-header">
+            <h1>📋 Submit Monthly Report</h1>
+            <p>Upload your industrial monitoring data for the current month</p>
+        </div>
+
+        <div id="alert-container"></div>
+
+        <form class="report-form" id="reportForm">
+            <div class="form-group">
+                <label>Company/Industry Name <span class="required-indicator">*</span></label>
+                <input type="text" class="form-control" id="industryName" required placeholder="e.g., ABC Steel Corporation">
+                <div class="form-help">Your company or facility name</div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Month & Year <span class="required-indicator">*</span></label>
+                    <div class="month-input-wrapper">
+                        <input type="month" class="form-control" id="reportMonth" required>
+                    </div>
+                    <div class="form-help">Select the month for which you're submitting the report</div>
+                </div>
+                <div class="form-group">
+                    <label>Report Category <span class="required-indicator">*</span></label>
+                    <select class="form-control" id="reportCategory" required>
+                        <option value="">-- Select Category --</option>
+                        <option value="emissions">Emissions Data</option>
+                        <option value="water_discharge">Water Discharge Quality</option>
+                        <option value="waste_management">Waste Management</option>
+                        <option value="compliance">Regulatory Compliance</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <div class="form-help">Type of report being submitted</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>State/Region <span class="required-indicator">*</span></label>
+                <select class="form-control" id="reportState" name="state" required>
+                    <option value="">-- Select Your State/Region --</option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                    <option value="Assam">Assam</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Chhattisgarh">Chhattisgarh</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Goa">Goa</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                    <option value="Jharkhand">Jharkhand</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Ladakh">Ladakh</option>
+                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Manipur">Manipur</option>
+                    <option value="Meghalaya">Meghalaya</option>
+                    <option value="Mizoram">Mizoram</option>
+                    <option value="Nagaland">Nagaland</option>
+                    <option value="Odisha">Odisha</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="Sikkim">Sikkim</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Tripura">Tripura</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="Uttarakhand">Uttarakhand</option>
+                    <option value="West Bengal">West Bengal</option>
+                    <option value="Chandigarh">Chandigarh</option>
+                    <option value="Puducherry">Puducherry</option>
+                </select>
+                <div class="form-help">Where is your facility located?</div>
+            </div>
+
+            <div class="form-group">
+                <label>Description / Notes <span class="required-indicator">*</span></label>
+                <textarea class="form-control" id="reportDescription" required placeholder="Provide a brief summary of the report contents and any notable findings or issues..."></textarea>
+                <div class="form-help">Describe key points and any anomalies or concerns</div>
+            </div>
+
+            <div class="form-group">
+                <label>Upload Report File <span class="required-indicator">*</span></label>
+                <div class="file-drop-zone" id="fileDropZone">
+                    <div class="file-drop-zone-icon">📄</div>
+                    <p class="file-drop-zone-text">Drag and drop your file here or click to browse</p>
+                    <p class="file-drop-zone-hint">Accepted formats: PDF, Excel (.xlsx, .xls), CSV (Max 10 MB)</p>
+                </div>
+                <input type="file" id="reportFile" style="display: none;" accept=".pdf,.xlsx,.xls,.csv">
+                <div class="file-selected" id="fileSelected">
+                    <div class="file-selected-name" id="fileName"></div>
+                    <div class="file-selected-size" id="fileSize"></div>
+                </div>
+                <div class="upload-progress" id="uploadProgress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">0%</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Contact Email <span class="required-indicator">*</span></label>
+                <input type="email" class="form-control" id="contactEmail" required placeholder="your.email@company.com">
+                <div class="form-help">For verification and communication regarding this report</div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                ✓ Submit Report
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Initialize nav when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize navigation
+            initNav();
+            
+            // Check authentication
+            const user = JSON.parse(localStorage.getItem('iris_user') || 'null');
+            if (!user) {
+                window.location.href = '/login';
+            } else if (user.role !== 'industry_user') {
+                showAlert('❌ Access Denied', 'Only industry users can submit reports', 'error');
+                setTimeout(() => window.location.href = '/', 3000);
+            }
+        });
+
+        const fileInput = document.getElementById('reportFile');
+        const fileDropZone = document.getElementById('fileDropZone');
+        const fileSelected = document.getElementById('fileSelected');
+        const form = document.getElementById('reportForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const alertContainer = document.getElementById('alert-container');
+
+        // File drop zone
+        fileDropZone.addEventListener('click', () => fileInput.click());
+
+        fileDropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileDropZone.classList.add('dragover');
+        });
+
+        fileDropZone.addEventListener('dragleave', () => {
+            fileDropZone.classList.remove('dragover');
+        });
+
+        fileDropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileDropZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                updateFileDisplay();
+            }
+        });
+
+        fileInput.addEventListener('change', updateFileDisplay);
+
+        function updateFileDisplay() {
+            const file = fileInput.files[0];
+            if (file) {
+                const maxSize = 10 * 1024 * 1024; // 10 MB
+                if (file.size > maxSize) {
+                    showAlert('❌ File Too Large', 'File size must be less than 10 MB', 'error');
+                    fileInput.value = '';
+                    fileSelected.classList.remove('show');
+                    return;
+                }
+
+                const validExtensions = ['pdf', 'xlsx', 'xls', 'csv'];
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+                if (!validExtensions.includes(fileExtension)) {
+                    showAlert('❌ Invalid File Type', 'Only PDF, Excel, and CSV files are accepted', 'error');
+                    fileInput.value = '';
+                    fileSelected.classList.remove('show');
+                    return;
+                }
+
+                document.getElementById('fileName').textContent = '📎 ' + file.name;
+                document.getElementById('fileSize').textContent = (file.size / 1024).toFixed(2) + ' KB';
+                fileSelected.classList.add('show');
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Validate file
+            if (!fileInput.files[0]) {
+                showAlert('❌ Missing File', 'Please select a file to upload', 'error');
+                return;
+            }
+
+            const user = JSON.parse(localStorage.getItem('iris_user'));
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('industry_name', document.getElementById('industryName').value);
+            formData.append('report_month', document.getElementById('reportMonth').value);
+            formData.append('report_category', document.getElementById('reportCategory').value);
+            formData.append('description', document.getElementById('reportDescription').value);
+            formData.append('contact_email', document.getElementById('contactEmail').value);
+            formData.append('state', document.getElementById('reportState').value);
+            formData.append('user_id', user.id);
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Uploading...';
+
+            try {
+                const response = await fetch('/api/reports/submit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert('✅ Success', 'Report submitted successfully! You will receive a confirmation email.', 'success');
+                    form.reset();
+                    fileSelected.classList.remove('show');
+                    setTimeout(() => window.location.href = '/', 2000);
+                } else {
+                    showAlert('❌ Submission Failed', data.error || 'An error occurred while submitting your report', 'error');
+                }
+            } catch (error) {
+                showAlert('❌ Error', 'Failed to submit report: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '✓ Submit Report';
+            }
+        });
+
+        function showAlert(title, message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${type} show`;
+            alertDiv.innerHTML = `<strong>${title}</strong><br>${message}`;
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertDiv);
+
+            if (type === 'success') {
+                setTimeout(() => alertDiv.remove(), 3000);
+            }
+        }
+    </script>
+</body>
+</html>

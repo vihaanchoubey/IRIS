@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IRIS – Compliance</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">
+      <img src="{{ url_for('static', filename='images/national-emblem.svg') }}" alt="National Emblem">
+    </div>
+    <div>
+      <div class="nav-logo-text">IRIS</div>
+      <div class="nav-logo-sub">
+        Environmental Intelligence
+        <div class="nav-logo-sub-tricolour">भारत सरकार</div>
+      </div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/aqi">AQI</a>
+    <a href="/water">Water Quality</a>
+    <a href="/noise">Noise</a>
+    <a href="/emissions">Emissions</a>
+    <a href="/compliance" class="active">Compliance</a>
+
+    <a href="/login">Login</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="section-label">Compliance &amp; Alerts</div>
+    <div class="page-title">Compliance Dashboard</div>
+    <div class="page-desc">Live alerts, monitoring logs, reports and campaign tracking across all states.</div>
+  </div>
+</div>
+
+<div class="content-area">
+
+  <!-- Summary row -->
+  <div class="data-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:28px">
+    <div class="data-metric"><div class="data-metric-label">Active Alerts</div><div class="data-metric-value" id="m-active" style="color:var(--red)">–</div></div>
+    <div class="data-metric"><div class="data-metric-label">Critical</div><div class="data-metric-value" id="m-crit" style="color:#b71c1c">–</div></div>
+    <div class="data-metric"><div class="data-metric-label">Escalated</div><div class="data-metric-value" id="m-esc" style="color:var(--orange)">–</div></div>
+    <div class="data-metric"><div class="data-metric-label">Resolved (7d)</div><div class="data-metric-value" id="m-res" style="color:var(--green)">–</div></div>
+    <div class="data-metric"><div class="data-metric-label">Non-Compliant</div><div class="data-metric-value" id="m-nc" style="color:var(--red)">–</div></div>
+  </div>
+
+  <!-- Section tabs -->
+  <div class="admin-tabbar">
+    <button class="admin-tab-btn is-active" data-ctab="alerts">🚨 Active Alerts</button>
+    <button class="admin-tab-btn" data-ctab="submit">📋 Submit Reading</button>
+    <button class="admin-tab-btn" data-ctab="reports">📄 Reports</button>
+    <button class="admin-tab-btn" data-ctab="campaigns">🎯 Campaigns</button>
+    <button class="admin-tab-btn" data-ctab="logs">📊 Monitoring Logs</button>
+  </div>
+
+  <!-- Alerts panel -->
+  <div id="cpanel-alerts" class="admin-panel">
+    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+      <select id="f-status" onchange="loadAlerts()" style="min-width:130px">
+        <option value="active">Active</option>
+        <option value="resolved">Resolved</option>
+        <option value="all">All</option>
+      </select>
+      <select id="f-severity" onchange="loadAlerts()" style="min-width:130px">
+        <option value="">All Severities</option>
+        <option value="critical">Critical</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+      </select>
+      <select id="f-state" onchange="loadAlerts()" style="min-width:160px">
+        <option value="">All States</option>
+      </select>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="iris-table">
+        <thead><tr><th>Severity</th><th>State</th><th>Parameter</th><th>Reading</th><th>Limit</th><th>Excess</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="alerts-tbody"><tr><td colspan="8" class="tbl-loading">Loading…</td></tr></tbody>
+      </table>
+    </div>
+    <!-- Top states -->
+    <div style="margin-top:20px">
+      <div style="font-size:13px;font-weight:600;color:var(--text-2);margin-bottom:10px">Top states by active alerts</div>
+      <div id="top-states-bars"></div>
+    </div>
+  </div>
+
+  <!-- Submit reading panel -->
+  <div id="cpanel-submit" class="admin-panel" style="display:none">
+    <div style="max-width:520px">
+      <div class="card">
+        <div class="card-title">Submit Environmental Reading</div>
+        <div class="form-row"><label>Industry</label>
+          <select id="log-industry"><option value="">Select industry</option></select>
+        </div>
+        <div class="form-row"><label>Monitoring Type</label>
+          <select id="log-mtype">
+            <option value="air">Air Quality</option>
+            <option value="water">Water Quality</option>
+            <option value="noise">Noise</option>
+            <option value="emissions">Emissions</option>
+          </select>
+        </div>
+        <div class="form-row two-up">
+          <div><label>Parameter *</label><input type="text" id="log-param" placeholder="e.g. PM2.5"></div>
+          <div><label>Value *</label><input type="number" id="log-value" step="0.01"></div>
+        </div>
+        <div class="form-row two-up">
+          <div><label>Unit</label><input type="text" id="log-unit" placeholder="µg/m³"></div>
+          <div><label>Reading Date</label><input type="date" id="log-date"></div>
+        </div>
+        <div class="form-row"><label>Remarks</label><input type="text" id="log-remarks" placeholder="Optional notes"></div>
+        <button class="btn-primary" style="width:100%;margin-top:4px" onclick="submitLog()">Submit Reading</button>
+        <div id="log-feedback" style="margin-top:10px;font-size:13px"></div>
+      </div>
+      <div class="card" style="margin-top:16px;background:var(--accent-muted);border-color:var(--accent)">
+        <div style="font-size:13px;color:var(--accent-text);line-height:1.6">
+          <strong>Auto-alert:</strong> If the submitted value exceeds a prescribed limit (NAAQS / BIS 10500), an alert is automatically created and visible in the Active Alerts tab.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reports panel -->
+  <div id="cpanel-reports" class="admin-panel" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <span style="font-size:14px;font-weight:600">Periodic Reports</span>
+      <button class="btn-primary btn-sm" onclick="openModal('report-modal')">+ Generate Report</button>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="iris-table">
+        <thead><tr><th>Type</th><th>State</th><th>Period</th><th>Generated By</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody id="reports-tbody"><tr><td colspan="6" class="tbl-loading">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Campaigns panel -->
+  <div id="cpanel-campaigns" class="admin-panel" style="display:none">
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="iris-table">
+        <thead><tr><th>Campaign</th><th>Type</th><th>State</th><th>Start</th><th>End</th><th>Team</th><th>Status</th></tr></thead>
+        <tbody id="camp-tbody"><tr><td colspan="7" class="tbl-loading">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Logs panel -->
+  <div id="cpanel-logs" class="admin-panel" style="display:none">
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="iris-table">
+        <thead><tr><th>Industry</th><th>Type</th><th>Parameter</th><th>Value</th><th>Unit</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody id="logs-tbody"><tr><td colspan="7" class="tbl-loading">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Alert update modal -->
+<div class="modal-overlay" id="alert-modal">
+  <div class="modal-box" style="max-width:380px">
+    <div class="modal-header"><span class="modal-title">Update Alert</span><button onclick="closeModal('alert-modal')" class="modal-close">✕</button></div>
+    <div class="modal-body">
+      <div style="font-size:13px;color:var(--text-2);margin-bottom:14px;line-height:1.6" id="alert-modal-msg"></div>
+      <div class="form-row"><label>Status</label>
+        <select id="alert-status-sel">
+          <option value="active">Active</option>
+          <option value="investigating">Investigating</option>
+          <option value="resolved">Resolved</option>
+        </select>
+      </div>
+      <div class="form-row"><label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+        <input type="checkbox" id="alert-escalate"> Escalate to authorities
+      </label></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('alert-modal')">Cancel</button>
+      <button class="btn-primary" onclick="saveAlertUpdate()">Update</button>
+    </div>
+  </div>
+</div>
+
+<!-- Report modal -->
+<div class="modal-overlay" id="report-modal">
+  <div class="modal-box" style="max-width:440px">
+    <div class="modal-header"><span class="modal-title">Generate Report</span><button onclick="closeModal('report-modal')" class="modal-close">✕</button></div>
+    <div class="modal-body">
+      <div class="form-row"><label>Report Type</label>
+        <select id="rpt-type"><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option><option value="annual">Annual</option></select>
+      </div>
+      <div class="form-row"><label>State</label>
+        <select id="rpt-state"><option value="">All States</option></select>
+      </div>
+      <div class="form-row two-up">
+        <div><label>Period Start</label><input type="date" id="rpt-start"></div>
+        <div><label>Period End</label><input type="date" id="rpt-end"></div>
+      </div>
+      <div class="form-row"><label>Summary</label><textarea id="rpt-summary" rows="3"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('report-modal')">Cancel</button>
+      <button class="btn-primary" onclick="saveReport()">Generate</button>
+    </div>
+  </div>
+</div>
+
+<button class="chatbot-fab" id="chatbot-fab">🤖</button>
+<div class="chatbot-window" id="chatbot-window">
+  <div class="chatbot-header">
+    <div class="chatbot-title"><div class="chatbot-avatar">🌍</div><div><div class="chatbot-name">IRIS AI</div><div class="chatbot-status">● Online</div></div></div>
+    <button class="chatbot-close" id="chatbot-close">✕</button>
+  </div>
+  <div class="chatbot-messages" id="chatbot-messages"></div>
+  <div class="chatbot-input-area"><input class="chatbot-input" placeholder="Ask about compliance…" id="chatbot-input"><button class="chatbot-send" id="chatbot-send">➤</button></div>
+</div>
+<div class="update-ticker"><span class="ticker-live">● LIVE</span><span>IRIS Compliance Monitor · Auto-alerts active</span></div>
+
+<script src="/static/js/main.js?v=20260314"></script>
+<script src="/static/js/chatbot.js?v=20260314"></script>
+<script src="/static/js/compliance.js?v=20260314"></script>
+<script src="/static/js/chatbot.js?v=20260314"></script>
+  </body>
+</html>

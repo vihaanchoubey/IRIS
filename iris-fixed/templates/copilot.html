@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IRIS – AI Copilot</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/css/admin.css">
+<style>
+.copilot-hero{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 55%,#0c2340 100%);padding:88px 32px 36px;position:relative;overflow:hidden;}
+.copilot-hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(9,105,218,.18) 0%,transparent 70%);pointer-events:none;}
+.copilot-hero-inner{max-width:860px;margin:0 auto;position:relative;z-index:1;}
+.copilot-hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(9,105,218,.2);border:1px solid rgba(99,163,255,.3);color:#93c5fd;border-radius:20px;padding:4px 13px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px;}
+.copilot-badge-dot{width:6px;height:6px;border-radius:50%;background:#60a5fa;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.copilot-hero h1{font-size:30px;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:8px;line-height:1.2;}
+.copilot-hero h1 span{color:#60a5fa;}
+.copilot-hero p{font-size:14px;color:#94a3b8;max-width:560px;line-height:1.7;}
+.copilot-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px;}
+.copilot-chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.8);border-radius:16px;padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;}
+.copilot-chip:hover{background:rgba(9,105,218,.4);border-color:rgba(99,163,255,.5);color:#fff;}
+.copilot-input-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-xl);box-shadow:var(--sh-md);overflow:hidden;transition:border-color .15s,box-shadow .15s;margin-bottom:20px;}
+.copilot-input-card:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(9,105,218,.1),var(--sh-md);}
+.copilot-input-label{padding:14px 18px 0;font-size:10.5px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.7px;display:flex;align-items:center;gap:7px;}
+.input-live-dot{width:6px;height:6px;background:#34d399;border-radius:50%;animation:pulse 2s infinite;}
+.copilot-input-card textarea{width:100%;min-height:88px;resize:vertical;background:transparent;border:none;outline:none;padding:10px 18px 14px;font-size:14px;line-height:1.7;color:var(--text);font-family:inherit;}
+.copilot-input-card textarea::placeholder{color:var(--text-3);}
+.copilot-input-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--border-soft);background:var(--surface-alt);}
+.copilot-hint{font-size:11.5px;color:var(--text-3);}
+.copilot-hint kbd{background:var(--border-soft);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:10px;font-family:'Roboto Mono',monospace;}
+.copilot-btns{display:flex;gap:8px;}
+.resp-feed{display:flex;flex-direction:column;gap:14px;}
+.resp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-sm);animation:slideUp .25s ease;}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.resp-query{padding:13px 18px;background:var(--surface-alt);border-bottom:1px solid var(--border-soft);display:flex;align-items:flex-start;gap:10px;}
+.resp-query-icon{width:28px;height:28px;border-radius:50%;background:var(--accent-muted);color:var(--accent-text);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.resp-query-text{font-size:13.5px;font-weight:600;color:var(--text);line-height:1.4;}
+.resp-query-time{font-size:11px;color:var(--text-3);margin-top:2px;}
+.resp-body{padding:18px 20px;}
+.resp-thinking{display:flex;align-items:center;gap:10px;color:var(--text-3);font-size:13px;font-style:italic;}
+.resp-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent-text);animation:rdot .8s ease-in-out infinite;margin-right:3px;}
+.resp-dots span:nth-child(2){animation-delay:.15s}.resp-dots span:nth-child(3){animation-delay:.3s}
+@keyframes rdot{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.resp-text{font-size:14px;color:var(--text);line-height:1.85;}
+.resp-text strong{font-weight:700;color:var(--text);}
+.resp-text ul{margin:8px 0 8px 20px;}.resp-text li{margin-bottom:5px;}
+.resp-footer{padding:9px 18px;border-top:1px solid var(--border-soft);display:flex;align-items:center;justify-content:space-between;}
+.resp-model{font-size:11px;color:var(--text-3);display:flex;align-items:center;gap:5px;}
+.resp-model-dot{width:6px;height:6px;border-radius:50%;background:#34d399;}
+.ctx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.ctx-metric{background:var(--surface-alt);border:1px solid var(--border-soft);border-radius:var(--r-lg);padding:16px;text-align:center;}
+.ctx-metric-val{font-size:26px;font-weight:700;font-family:'Roboto Mono',monospace;color:var(--text);}
+.ctx-metric-lbl{font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.6px;margin-top:4px;}
+.anomaly-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border-soft);}
+.anomaly-item:last-child{border-bottom:none;}
+.anomaly-badge{flex-shrink:0;padding:3px 10px;border-radius:10px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-top:1px;}
+.anomaly-badge.critical{background:var(--red-bg);color:var(--red);}
+.anomaly-badge.high{background:var(--yellow-bg);color:var(--yellow);}
+.anomaly-badge.medium{background:var(--accent-muted);color:var(--accent-text);}
+.anomaly-msg{font-size:13px;color:var(--text);line-height:1.5;}
+.anomaly-param{font-size:11px;color:var(--text-3);margin-top:3px;}
+.powered-badge{display:inline-flex;align-items:center;gap:5px;background:var(--accent-muted);color:var(--accent-text);border-radius:10px;padding:2px 10px;font-size:11px;font-weight:600;margin-left:8px;}
+@media(max-width:700px){.ctx-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">
+      <img src="{{ url_for('static', filename='images/national-emblem.svg') }}" alt="National Emblem">
+    </div>
+    <div>
+      <div class="nav-logo-text">IRIS</div>
+      <div class="nav-logo-sub">
+        Environmental Intelligence
+        <div class="nav-logo-sub-tricolour">भारत सरकार</div>
+      </div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a><a href="/aqi">AQI</a><a href="/water">Water Quality</a>
+    <a href="/noise">Noise</a><a href="/emissions">Emissions</a>
+    <a href="/copilot" class="active">AI Copilot</a>
+    <div id="nav-auth-zone"></div>
+  </div>
+</nav>
+
+<div class="copilot-hero">
+  <div class="copilot-hero-inner">
+    <div class="copilot-hero-badge"><span class="copilot-badge-dot"></span>Powered by Groq · Live Data</div>
+    <h1>IRIS <span>AI Copilot</span></h1>
+    <p>Ask scenario-based questions about emissions, pollution interventions, regional risk, and anomaly detection — grounded in live data across all 33 Indian states.</p>
+    <div class="copilot-chips">
+      <button class="copilot-chip" data-q="If industry X reduces emissions by 30%, what is the regional risk change?">🌫️ Emission reduction impact</button>
+      <button class="copilot-chip" data-q="What happens if top high-risk industries shut down during a festival period?">🏭 Festival shutdown scenario</button>
+      <button class="copilot-chip" data-q="Which states have the highest non-compliance risk this week?">⚠️ Risk states now</button>
+      <button class="copilot-chip" data-q="What are the water quality risks in West Bengal and Bihar?">💧 Water quality risks</button>
+      <button class="copilot-chip" data-q="Show anomaly detection summary across all parameters">📊 Anomaly summary</button>
+      <button class="copilot-chip" data-q="Predict AQI in Delhi if PM2.5 sources are reduced by 20%">🔮 AQI prediction Delhi</button>
+    </div>
+  </div>
+</div>
+
+<div class="content-area" style="max-width:860px;margin:0 auto;">
+
+  <div class="copilot-input-card">
+    <div class="copilot-input-label"><span class="input-live-dot"></span>Ask the Copilot</div>
+    <textarea id="copilot-input" rows="3" placeholder="e.g. If Delhi reduces emissions by 30%, what is the expected AQI improvement over the next week?"></textarea>
+    <div class="copilot-input-footer">
+      <div class="copilot-hint">Press <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to send</div>
+      <div class="copilot-btns">
+        <button class="btn-secondary" id="clear-btn">Clear</button>
+        <button class="btn-primary" id="ask-btn">Ask Copilot →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="resp-feed" id="resp-feed"></div>
+
+  <div class="card" style="margin-top:24px;">
+    <div class="card-title" style="margin-bottom:14px;">📡 Live Context — What the Copilot Sees</div>
+    <div class="ctx-grid">
+      <div class="ctx-metric"><div class="ctx-metric-val" id="ctx-alerts" style="color:var(--red)">–</div><div class="ctx-metric-lbl">Active Alerts</div></div>
+      <div class="ctx-metric"><div class="ctx-metric-val" id="ctx-aqi">–</div><div class="ctx-metric-lbl">Avg National AQI</div></div>
+      <div class="ctx-metric"><div class="ctx-metric-val" id="ctx-ind">–</div><div class="ctx-metric-lbl">Industries Monitored</div></div>
+    </div>
+    <div style="margin-top:14px;">
+      <div class="section-label" style="margin-bottom:8px;">Top Risk States</div>
+      <div id="ctx-states" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div class="card-title" style="margin:0;">🔍 Live Anomaly Detection</div>
+      <div id="anomaly-badges" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+    </div>
+    <div id="anomaly-list"><div style="color:var(--text-3);font-size:13px;font-style:italic;">Loading anomaly data…</div></div>
+  </div>
+
+  <div class="card" style="margin-top:20px;margin-bottom:40px;">
+    <div class="card-title">How IRIS Copilot Works</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:8px;">
+      <div style="padding:12px;background:var(--surface-alt);border-radius:var(--r-md);"><div style="font-size:13px;font-weight:600;margin-bottom:5px;">🔗 Live Data Grounding</div><div style="font-size:12px;color:var(--text-2);line-height:1.6;">Responses grounded in real-time IRIS data — alerts, AQI, water quality, emissions across 33 states.</div></div>
+      <div style="padding:12px;background:var(--surface-alt);border-radius:var(--r-md);"><div style="font-size:13px;font-weight:600;margin-bottom:5px;">⚡ Groq AI Engine</div><div style="font-size:12px;color:var(--text-2);line-height:1.6;">Powered by Groq Llama 3.1 8B — ultra-fast, lightweight AI inference for environmental reasoning and compliance analysis.</div></div>
+      <div style="padding:12px;background:var(--surface-alt);border-radius:var(--r-md);"><div style="font-size:13px;font-weight:600;margin-bottom:5px;">📊 Anomaly Detection</div><div style="font-size:12px;color:var(--text-2);line-height:1.6;">Z-score analysis flags readings exceeding NAAQS, BIS, and CPCB prescribed limits in real time.</div></div>
+      <div style="padding:12px;background:var(--surface-alt);border-radius:var(--r-md);"><div style="font-size:13px;font-weight:600;margin-bottom:5px;">⚡ What-if Scenarios</div><div style="font-size:12px;color:var(--text-2);line-height:1.6;">Simulate emission cuts, shutdowns, and interventions with quantified impact estimates and uncertainty ranges.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="update-ticker"><span class="ticker-live">● AI</span><span>IRIS AI Copilot · Groq Llama 3.1 8B · Live data across 33 states · <span class="ticker-time"></span></span></div>
+
+<button class="iris-ai-fab" id="iris-ai-fab" title="Ask IRIS AI">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Brain shape outline -->
+    <path d="M12 2C7 2 4 5 4 10c0 2 1 4 2 5.5M12 2c5 0 8 3 8 8c0 2-1 4-2 5.5" fill="currentColor" opacity="0.3"/>
+    <path d="M6 10c-1 1-1.5 2.5-1.5 4 0 3 2 5 3.5 6M18 10c1 1 1.5 2.5 1.5 4 0 3-2 5-3.5 6M12 2v8" stroke="currentColor" stroke-width="1.5" opacity="0.7"/>
+    
+    <!-- Neural nodes/synapses -->
+    <circle cx="12" cy="4" r="1.2" fill="currentColor" opacity="0.9"/>
+    <circle cx="8" cy="8" r="1" fill="currentColor" opacity="0.8"/>
+    <circle cx="16" cy="8" r="1" fill="currentColor" opacity="0.8"/>
+    <circle cx="6" cy="12" r="1" fill="currentColor" opacity="0.8"/>
+    <circle cx="18" cy="12" r="1" fill="currentColor" opacity="0.8"/>
+    <circle cx="12" cy="14" r="1.2" fill="currentColor" opacity="0.9"/>
+    <circle cx="9" cy="18" r="0.8" fill="currentColor" opacity="0.7"/>
+    <circle cx="15" cy="18" r="0.8" fill="currentColor" opacity="0.7"/>
+    
+    <!-- Neural connections -->
+    <line x1="12" y1="4" x2="8" y2="8" stroke="currentColor" stroke-width="0.8" opacity="0.6"/>
+    <line x1="12" y1="4" x2="16" y2="8" stroke="currentColor" stroke-width="0.8" opacity="0.6"/>
+    <line x1="8" y1="8" x2="6" y2="12" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+    <line x1="16" y1="8" x2="18" y2="12" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+    <line x1="6" y1="12" x2="12" y2="14" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+    <line x1="18" y1="12" x2="12" y2="14" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+    <line x1="12" y1="14" x2="9" y2="18" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+    <line x1="12" y1="14" x2="15" y2="18" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+  </svg>
+</button>
+<div class="iris-ai-panel" id="iris-ai-panel">
+  <div class="iris-ai-header">
+    <div class="iris-ai-header-left">
+      <div class="iris-ai-logo">🌍</div>
+      <div><div class="iris-ai-title">IRIS AI</div><div class="iris-ai-subtitle"><span class="iris-ai-online"></span>Powered by Groq</div></div>
+    </div>
+    <button class="iris-ai-close" id="iris-ai-close">✕</button>
+  </div>
+  <div class="iris-chips-strip">
+    <button class="iris-chip" data-q="If Delhi reduces emissions by 30%, what is the AQI impact?">🌫️ Emission cut</button>
+    <button class="iris-chip" data-q="What happens if top high-risk industries shut down during a festival?">🏭 Festival shutdown</button>
+    <button class="iris-chip" data-q="Which states have highest non-compliance risk right now?">⚠️ Risk states</button>
+    <button class="iris-chip" data-q="What are water quality risks in West Bengal and Bihar?">💧 Water risks</button>
+    <button class="iris-chip" data-q="Show anomaly detection summary across all parameters">📊 Anomalies</button>
+  </div>
+  <div class="iris-ai-msgs" id="iris-ai-msgs"></div>
+  <div class="iris-ai-input-row">
+    <textarea class="iris-ai-input" id="iris-ai-input" rows="1" placeholder="Ask about AQI, water, emissions…"></textarea>
+    <button class="iris-ai-send" id="iris-ai-send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<script src="/static/js/main.js?v=20260314"></script>
+<script>
+// ── Wire up buttons with addEventListener (no inline onclick conflicts) ─────
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('ask-btn').addEventListener('click', askCopilot);
+  document.getElementById('clear-btn').addEventListener('click', clearCopilot);
+
+  // Chips
+  document.querySelectorAll('.copilot-chip').forEach(function(chip) {
+    chip.addEventListener('click', function() { useQuery(this.dataset.q); });
+  });
+
+  loadContext();
+  loadAnomalies();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && e.ctrlKey) askCopilot();
+});
+
+function useQuery(q) {
+  document.getElementById('copilot-input').value = q;
+  askCopilot();
+}
+
+function clearCopilot() {
+  document.getElementById('copilot-input').value = '';
+  document.getElementById('resp-feed').innerHTML = '';
+}
+
+async function askCopilot() {
+  var query = document.getElementById('copilot-input').value.trim();
+  if (!query) return;
+  var btn = document.getElementById('ask-btn');
+  btn.disabled = true; btn.textContent = 'Thinking…';
+
+  var feed = document.getElementById('resp-feed');
+  var card = document.createElement('div');
+  card.className = 'resp-card';
+  var respId = 'resp-' + Date.now();
+  card.innerHTML =
+    '<div class="resp-query">' +
+      '<div class="resp-query-icon">👤</div>' +
+      '<div><div class="resp-query-text">' + escHtml(query) + '</div>' +
+      '<div class="resp-query-time">' + new Date().toLocaleTimeString() + '</div></div>' +
+    '</div>' +
+    '<div class="resp-body">' +
+      '<div class="resp-thinking" id="' + respId + '-think">' +
+        '<div class="resp-dots"><span></span><span></span><span></span></div>' +
+        'Analysing live environmental data…' +
+      '</div>' +
+      '<div id="' + respId + '" class="resp-text" style="display:none;"></div>' +
+    '</div>' +
+    '<div class="resp-footer">' +
+      '<div class="resp-model" id="' + respId + '-model"><span class="resp-model-dot"></span> IRIS Copilot</div>' +
+    '</div>';
+  feed.prepend(card);
+
+  try {
+    var res = await fetch('/api/copilot/query', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({query: query})
+    });
+    var data = await res.json();
+    var thinkEl = document.getElementById(respId + '-think');
+    var respEl  = document.getElementById(respId);
+    var modelEl = document.getElementById(respId + '-model');
+    if (thinkEl) thinkEl.style.display = 'none';
+    if (respEl) { respEl.style.display = 'block'; respEl.innerHTML = formatResponse(data.response || data.error || 'No response.'); }
+    if (modelEl && data.powered_by) modelEl.innerHTML = '<span class="resp-model-dot"></span> ' + data.powered_by;
+  } catch(e) {
+    var el = document.getElementById(respId);
+    var th = document.getElementById(respId + '-think');
+    if (th) th.style.display = 'none';
+    if (el) { el.style.display='block'; el.textContent='Connection error — make sure the server is running.'; }
+  }
+  btn.disabled = false; btn.textContent = 'Ask Copilot →';
+}
+
+function formatResponse(text) {
+  var s = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  s = s.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  s = s.replace(/^#{1,3}\s+(.+)$/gm,'<strong style="display:block;margin:10px 0 4px;font-size:14px;">$1</strong>');
+  s = s.replace(/^[-•]\s+(.+)$/gm,'<li>$1</li>');
+  s = s.replace(/((<li>[^<]*<\/li>)+)/g,'<ul style="margin:6px 0 6px 18px">$1</ul>');
+  s = s.replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+  s = s.replace(/±([\d.]+%?)/g,'<span style="color:var(--text-3)">±$1</span>');
+  return s;
+}
+
+function escHtml(t) { var d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
+
+async function loadContext() {
+  try {
+    var res = await Promise.all([
+      fetch('/api/summary').then(function(r){return r.json();}).catch(function(){return {};}),
+      fetch('/api/alerts/summary').then(function(r){return r.json();}).catch(function(){return {};}),
+      fetch('/api/industries').then(function(r){return r.json();}).catch(function(){return [];})
+    ]);
+    var summary=res[0], alerts=res[1], inds=res[2];
+    var avgAQI = Math.round((summary.aqi && summary.aqi.avg_aqi) || 0);
+    var alertsEl=document.getElementById('ctx-alerts');
+    var aqiEl=document.getElementById('ctx-aqi');
+    var indEl=document.getElementById('ctx-ind');
+    if (alertsEl) alertsEl.textContent = alerts.total !== undefined ? alerts.total : '–';
+    if (aqiEl) {
+      aqiEl.textContent = avgAQI || '–';
+      if (avgAQI>200) aqiEl.style.color='var(--red)';
+      else if (avgAQI>100) aqiEl.style.color='var(--orange)';
+      else if (avgAQI>0) aqiEl.style.color='var(--green)';
+    }
+    if (indEl) indEl.textContent = Array.isArray(inds) ? inds.length : '–';
+    var statesEl=document.getElementById('ctx-states');
+    if (statesEl) {
+      statesEl.innerHTML='';
+      var byState = (alerts.by_state||[]).slice(0,8);
+      if (byState.length) {
+        byState.forEach(function(s){
+          var b=document.createElement('span');
+          b.className='status-badge status-poor';
+          b.textContent=s.state+' ('+s.n+')';
+          statesEl.appendChild(b);
+        });
+      } else {
+        statesEl.innerHTML='<span style="color:var(--text-3);font-size:13px;">No active alerts.</span>';
+      }
+    }
+  } catch(e) { console.warn('Context error',e); }
+}
+
+async function loadAnomalies() {
+  var listEl=document.getElementById('anomaly-list');
+  var badgesEl=document.getElementById('anomaly-badges');
+  try {
+    var data=await fetch('/api/anomalies').then(function(r){return r.json();}).catch(function(){return null;});
+    if (!data||!data.anomalies) { listEl.innerHTML='<div style="color:var(--text-3);font-size:13px;">No anomaly data available.</div>'; return; }
+    var anoms=data.anomalies, crit=data.critical||0, high=data.high||0, med=data.medium||0;
+    var badges='';
+    if (crit>0) badges+='<span class="status-badge status-severe">🔴 '+crit+' Critical</span>';
+    if (high>0) badges+='<span class="status-badge status-poor">🟠 '+high+' High</span>';
+    if (med>0) badges+='<span class="status-badge status-moderate">🔵 '+med+' Medium</span>';
+    if (!anoms.length) badges='<span class="status-badge status-good">✅ All Normal</span>';
+    if (badgesEl) badgesEl.innerHTML=badges;
+    if (!anoms.length) { listEl.innerHTML='<div style="color:var(--green);font-size:13px;font-weight:500;">✅ No anomalies detected. All readings within safe limits.</div>'; return; }
+    listEl.innerHTML=anoms.slice(0,15).map(function(a){
+      var paramInfo=(a.value!=null?'<strong>'+a.value+(a.unit?' '+a.unit:'')+'</strong>':'');
+      var limitInfo=(a.threshold!=null?' · limit: '+a.threshold+(a.unit?' '+a.unit:''):'');
+      var zInfo=(a.z_score!=null?' · z='+a.z_score+'σ':'');
+      return '<div class="anomaly-item">' +
+        '<span class="anomaly-badge '+a.severity+'">'+a.severity+'</span>' +
+        '<div><div class="anomaly-msg">'+escHtml(a.message)+'</div>' +
+        '<div class="anomaly-param">'+a.type+' · '+a.parameter+
+          (paramInfo?' · '+paramInfo:'')+limitInfo+zInfo+'</div></div>' +
+        '</div>';
+    }).join('');
+  } catch(e) { listEl.innerHTML='<div style="color:var(--text-3);font-size:13px;">Error loading anomalies.</div>'; }
+}
+</script>
+<script src="/static/js/iris-ai.js?v=20260314"></script>
+<script src="/static/js/iris-alerts.js?v=20260314"></script>
+<script src="/static/js/iris-nav.js?v=20260314"></script>
+</body>
+</html>

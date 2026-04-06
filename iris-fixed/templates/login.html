@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IRIS – Login</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<style>
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  padding-top: 52px;
+  background: var(--bg);
+}
+
+/* Left panel — hero/info */
+.login-left {
+  flex: 1;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 56px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.login-left-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+.login-left-logo-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: var(--accent); display: flex; align-items: center;
+  justify-content: center; font-size: 18px;
+}
+.login-left-logo-text { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -.3px; }
+.login-left-logo-sub  { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; font-weight: 500; }
+
+.login-left h2 {
+  font-size: 26px; font-weight: 700; color: var(--text);
+  letter-spacing: -.4px; line-height: 1.25; margin-bottom: 12px;
+}
+.login-left p {
+  font-size: 14px; color: var(--text-2); line-height: 1.7; margin-bottom: 36px; max-width: 380px;
+}
+
+.role-cards { display: flex; flex-direction: column; gap: 10px; }
+.role-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-lg);
+  cursor: pointer;
+  transition: all .13s;
+}
+.role-card:hover { border-color: var(--accent); background: var(--accent-muted); }
+.role-card.selected { border-color: var(--accent); background: var(--accent-muted); box-shadow: 0 0 0 3px rgba(9,105,218,.1); }
+.role-card-icon {
+  width: 34px; height: 34px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.role-card-info { flex: 1; }
+.role-card-name  { font-size: 13px; font-weight: 600; color: var(--text); }
+.role-card-desc  { font-size: 11.5px; color: var(--text-3); margin-top: 1px; line-height: 1.4; }
+.role-card-lock  { font-size: 13px; color: var(--text-3); flex-shrink: 0; }
+.role-card.selected .role-card-lock { color: var(--accent); }
+
+/* Right panel — form */
+.login-right {
+  width: 400px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 40px;
+  background: var(--surface);
+}
+
+.login-form-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.login-form-sub   { font-size: 13px; color: var(--text-2); margin-bottom: 28px; }
+
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block; font-size: 11.5px; font-weight: 600;
+  color: var(--text-2); text-transform: uppercase; letter-spacing: .5px;
+  margin-bottom: 6px;
+}
+.form-group select,
+.form-group input {
+  width: 100%; background: var(--surface-alt);
+  border: 1px solid var(--border); border-radius: var(--r);
+  padding: 9px 12px; font-size: 13.5px;
+  font-family: 'Inter', sans-serif; color: var(--text); outline: none;
+  transition: border-color .12s, box-shadow .12s;
+}
+.form-group select:focus,
+.form-group input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(9,105,218,.12);
+}
+
+.login-btn {
+  width: 100%; padding: 10px; background: var(--accent);
+  color: #fff; border: none; border-radius: var(--r-md);
+  font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif;
+  cursor: pointer; margin-top: 6px;
+  transition: background .12s, box-shadow .12s;
+  box-shadow: 0 1px 3px rgba(9,105,218,.3);
+}
+.login-btn:hover { background: var(--accent-hover); box-shadow: var(--sh-md); }
+.login-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+.login-error {
+  background: var(--red-bg); color: var(--red);
+  border: 1px solid #f5c1c1; border-radius: var(--r);
+  padding: 9px 12px; font-size: 13px; font-weight: 500;
+  margin-bottom: 14px; display: none;
+}
+.login-error.show { display: block; }
+
+.login-divider {
+  display: flex; align-items: center; gap: 10px;
+  margin: 20px 0; color: var(--text-3); font-size: 12px;
+}
+.login-divider::before, .login-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border-soft);
+}
+
+.demo-creds {
+  background: var(--surface-alt); border: 1px solid var(--border-soft);
+  border-radius: var(--r-lg); padding: 14px;
+}
+.demo-creds-title { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+.demo-cred-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 5px 0; border-bottom: 1px solid var(--border-soft); font-size: 12px;
+}
+.demo-cred-row:last-child { border-bottom: none; }
+.demo-cred-role { color: var(--text-2); font-weight: 500; }
+.demo-cred-val  { font-family: 'Roboto Mono', monospace; color: var(--accent-text); font-size: 11.5px; }
+.demo-use-btn {
+  background: none; border: none; color: var(--accent); font-size: 11px;
+  cursor: pointer; font-family: 'Inter', sans-serif; padding: 2px 6px;
+  border-radius: 4px; font-weight: 600;
+}
+.demo-use-btn:hover { background: var(--accent-muted); }
+
+/* Logged-in state */
+.logged-in-panel { display: none; }
+.user-avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--accent); display: flex; align-items: center;
+  justify-content: center; font-size: 20px; color: #fff;
+  font-weight: 700; margin-bottom: 14px;
+}
+.welcome-name  { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.welcome-role  {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent-muted); color: var(--accent-text);
+  border-radius: 20px; padding: 3px 12px;
+  font-size: 12px; font-weight: 600; margin-bottom: 20px;
+}
+.access-list { margin: 16px 0; display: flex; flex-direction: column; gap: 8px; }
+.access-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; background: var(--surface-alt);
+  border: 1px solid var(--border-soft); border-radius: var(--r-md);
+  font-size: 13px; color: var(--text);
+  text-decoration: none; transition: all .13s;
+}
+.access-item:hover { border-color: var(--accent); background: var(--accent-muted); color: var(--accent-text); }
+.access-item-icon { font-size: 15px; width: 22px; text-align: center; }
+.access-item-label { flex: 1; font-weight: 500; }
+.access-item-arrow { color: var(--text-3); font-size: 12px; }
+.logout-btn {
+  width: 100%; padding: 9px; background: none;
+  border: 1px solid var(--border); border-radius: var(--r-md);
+  color: var(--text-2); font-size: 13px; font-weight: 500;
+  font-family: 'Inter', sans-serif; cursor: pointer; margin-top: 12px;
+  transition: all .13s;
+}
+.logout-btn:hover { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+
+@media(max-width: 860px) {
+  .login-page { flex-direction: column; }
+  .login-left { padding: 40px 24px; }
+  .login-right { width: 100%; padding: 32px 24px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">
+      <img src="{{ url_for('static', filename='images/national-emblem.svg') }}" alt="National Emblem">
+    </div>
+    <div>
+      <div class="nav-logo-text">IRIS</div>
+      <div class="nav-logo-sub">
+        Environmental Intelligence
+        <div class="nav-logo-sub-tricolour">भारत सरकार</div>
+      </div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/aqi">AQI</a>
+    <a href="/water">Water Quality</a>
+    <a href="/noise">Noise</a>
+    <a href="/emissions">Emissions</a>
+
+    <div id="nav-auth-zone"></div>
+  </div>
+</nav>
+
+<div class="login-page">
+
+  <!-- Left: role selector -->
+  <div class="login-left">
+    <div class="login-left-logo">
+      <div class="login-left-logo-icon">🌍</div>
+      <div>
+        <div class="login-left-logo-text">IRIS</div>
+        <div class="login-left-logo-sub">Environmental Intelligence</div>
+      </div>
+    </div>
+
+    <h2>Role-Based Access Control</h2>
+    <p>IRIS features are locked by role. Select your role and sign in to access the tools assigned to your position.</p>
+
+    <div class="role-cards" id="role-cards">
+      <div class="role-card" onclick="selectRole('super_admin')" data-role="super_admin">
+        <div class="role-card-icon" style="background:#fbefff">🛡️</div>
+        <div class="role-card-info">
+          <div class="role-card-name">Super Admin</div>
+          <div class="role-card-desc">Full system access — manage all users, data, offices, industries</div>
+        </div>
+        <div class="role-card-lock">🔒</div>
+      </div>
+      <div class="role-card" onclick="selectRole('regional_officer')" data-role="regional_officer">
+        <div class="role-card-icon" style="background:#dbeafe">🏛️</div>
+        <div class="role-card-info">
+          <div class="role-card-name">Regional Officer</div>
+          <div class="role-card-desc">Manage alerts, view compliance, oversee regional industries</div>
+        </div>
+        <div class="role-card-lock">🔒</div>
+      </div>
+      <div class="role-card" onclick="selectRole('monitoring_team')" data-role="monitoring_team">
+        <div class="role-card-icon" style="background:#e0f2f1">🔬</div>
+        <div class="role-card-info">
+          <div class="role-card-name">Monitoring Team</div>
+          <div class="role-card-desc">Submit environmental readings, access monitoring logs, run campaigns</div>
+        </div>
+        <div class="role-card-lock">🔒</div>
+      </div>
+      <div class="role-card" onclick="selectRole('industry_user')" data-role="industry_user">
+        <div class="role-card-icon" style="background:#fff1e5">🏭</div>
+        <div class="role-card-info">
+          <div class="role-card-name">Industry User</div>
+          <div class="role-card-desc">Submit monitoring data, view compliance status for your industry</div>
+        </div>
+        <div class="role-card-lock">🔒</div>
+      </div>
+      <div class="role-card" onclick="selectRole('citizen')" data-role="citizen">
+        <div class="role-card-icon" style="background:#dafbe1">👤</div>
+        <div class="role-card-info">
+          <div class="role-card-name">Citizen</div>
+          <div class="role-card-desc">View public environmental data — AQI, water, noise, emissions</div>
+        </div>
+        <div class="role-card-lock">🔒</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: login form -->
+  <div class="login-right">
+
+    <!-- Login form (shown when logged out) -->
+    <div id="login-form-panel">
+      <div class="login-form-title">Sign in to IRIS</div>
+      <div class="login-form-sub" id="form-sub-text">Select a role on the left, then sign in.</div>
+
+      <div class="login-error" id="login-error">Invalid username or password. Please try again.</div>
+
+      <div class="form-group">
+        <label>Role</label>
+        <select id="role-select" onchange="onRoleSelectChange()">
+          <option value="">— Select role —</option>
+          <option value="super_admin">Super Admin</option>
+          <option value="regional_officer">Regional Officer</option>
+          <option value="monitoring_team">Monitoring Team</option>
+          <option value="industry_user">Industry User</option>
+          <option value="citizen">Citizen</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="username-input" placeholder="Enter username" autocomplete="username">
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password-input" placeholder="Enter password" autocomplete="current-password"
+          onkeydown="if(event.key==='Enter') doLogin()">
+      </div>
+
+      <button class="login-btn" id="login-btn" onclick="doLogin()">Sign In</button>
+
+      <div class="login-divider">Demo credentials</div>
+
+      <div class="demo-creds">
+        <div class="demo-creds-title">Test accounts</div>
+        <div class="demo-cred-row">
+          <span class="demo-cred-role">Super Admin</span>
+          <span class="demo-cred-val">admin / admin123</span>
+          <button class="demo-use-btn" onclick="fillCreds('super_admin','admin','admin123')">Use</button>
+        </div>
+        <div class="demo-cred-row">
+          <span class="demo-cred-role">Regional Officer</span>
+          <span class="demo-cred-val">rofficer / officer123</span>
+          <button class="demo-use-btn" onclick="fillCreds('regional_officer','rofficer','officer123')">Use</button>
+        </div>
+        <div class="demo-cred-row">
+          <span class="demo-cred-role">Monitoring Team</span>
+          <span class="demo-cred-val">mteam1 / team123</span>
+          <button class="demo-use-btn" onclick="fillCreds('monitoring_team','mteam1','team123')">Use</button>
+        </div>
+        <div class="demo-cred-row">
+          <span class="demo-cred-role">Industry User</span>
+          <span class="demo-cred-val">industry1 / industry123</span>
+          <button class="demo-use-btn" onclick="fillCreds('industry_user','industry1','industry123')">Use</button>
+        </div>
+        <div class="demo-cred-row">
+          <span class="demo-cred-role">Citizen</span>
+          <span class="demo-cred-val">citizen1 / citizen123</span>
+          <button class="demo-use-btn" onclick="fillCreds('citizen','citizen1','citizen123')">Use</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logged-in state -->
+    <div class="logged-in-panel" id="logged-in-panel">
+      <div class="user-avatar" id="user-avatar">?</div>
+      <div class="welcome-name" id="welcome-name">Welcome</div>
+      <div class="welcome-role" id="welcome-role">Role</div>
+      <div style="font-size:13px;color:var(--text-2);margin-bottom:4px">You have access to:</div>
+      <div class="access-list" id="access-list"></div>
+      <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="update-ticker"><span class="ticker-live">● SECURE</span><span>IRIS Role-Based Access Control · All data encrypted</span></div>
+
+<script>
+const ROLE_ACCESS = {
+  super_admin: [
+    { icon:'🌍', label:'Live Dashboard', href:'/' },
+    { icon:'📊', label:'AQI Monitoring', href:'/aqi' },
+    { icon:'💧', label:'Water Quality', href:'/water' },
+    { icon:'🔊', label:'Noise Monitoring', href:'/noise' },
+    { icon:'🏭', label:'Emissions Tracking', href:'/emissions' },
+    { icon:'🚨', label:'Compliance & Alerts', href:'/compliance' },
+    { icon:'⚙️', label:'Master Management (Admin)', href:'/admin' },
+  ],
+  regional_officer: [
+    { icon:'🌍', label:'Live Dashboard', href:'/' },
+    { icon:'📊', label:'AQI Monitoring', href:'/aqi' },
+    { icon:'💧', label:'Water Quality', href:'/water' },
+    { icon:'🔊', label:'Noise Monitoring', href:'/noise' },
+    { icon:'🏭', label:'Emissions Tracking', href:'/emissions' },
+    { icon:'🚨', label:'Compliance & Alerts', href:'/compliance' },
+  ],
+  monitoring_team: [
+    { icon:'🌍', label:'Live Dashboard', href:'/' },
+    { icon:'📊', label:'AQI Monitoring', href:'/aqi' },
+    { icon:'💧', label:'Water Quality', href:'/water' },
+    { icon:'🔊', label:'Noise Monitoring', href:'/noise' },
+    { icon:'🏭', label:'Emissions Tracking', href:'/emissions' },
+    { icon:'🚨', label:'Submit Readings & Logs', href:'/compliance' },
+  ],
+  industry_user: [
+    { icon:'🌍', label:'Live Dashboard', href:'/' },
+    { icon:'📊', label:'AQI Data', href:'/aqi' },
+    { icon:'🚨', label:'My Compliance Status', href:'/compliance' },
+  ],
+  citizen: [
+    { icon:'🌍', label:'Live Dashboard', href:'/' },
+    { icon:'📊', label:'AQI Data', href:'/aqi' },
+    { icon:'💧', label:'Water Quality', href:'/water' },
+    { icon:'🔊', label:'Noise Levels', href:'/noise' },
+    { icon:'🏭', label:'Emissions Data', href:'/emissions' },
+  ],
+};
+
+const ROLE_LABELS = {
+  super_admin:'Super Admin', regional_officer:'Regional Officer',
+  monitoring_team:'Monitoring Team', industry_user:'Industry User', citizen:'Citizen'
+};
+
+let selectedRole = '';
+
+// Restore session from localStorage
+const savedUser = localStorage.getItem('iris_user');
+if (savedUser) {
+  try { showLoggedIn(JSON.parse(savedUser)); } catch(e) {}
+}
+
+function selectRole(role) {
+  selectedRole = role;
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`[data-role="${role}"]`)?.classList.add('selected');
+  document.getElementById('role-select').value = role;
+  document.getElementById('form-sub-text').textContent =
+    `Signing in as: ${ROLE_LABELS[role]}`;
+  document.getElementById('login-error').classList.remove('show');
+}
+
+function onRoleSelectChange() {
+  selectRole(document.getElementById('role-select').value);
+}
+
+function fillCreds(role, username, password) {
+  selectRole(role);
+  document.getElementById('username-input').value = username;
+  document.getElementById('password-input').value = password;
+  document.getElementById('login-error').classList.remove('show');
+}
+
+async function doLogin() {
+  const username = document.getElementById('username-input').value.trim();
+  const password = document.getElementById('password-input').value;
+  const role     = document.getElementById('role-select').value;
+
+  if (!username || !password) {
+    showError('Please enter your username and password.');
+    return;
+  }
+
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+
+  try {
+    const res  = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+
+    if (!res.ok || data.error) {
+      showError(data.error || 'Invalid credentials.');
+      btn.disabled = false; btn.textContent = 'Sign In';
+      return;
+    }
+
+    // Validate that role matches
+    if (role && data.user.role !== role) {
+      showError(`This account is not registered as ${ROLE_LABELS[role]}. Actual role: ${ROLE_LABELS[data.user.role] || data.user.role}.`);
+      btn.disabled = false; btn.textContent = 'Sign In';
+      return;
+    }
+
+    localStorage.setItem('iris_user', JSON.stringify(data.user));
+    // Redirect to home page after successful login
+    setTimeout(() => { window.location.href = '/'; }, 500);
+
+  } catch(e) {
+    showError('Connection error. Please try again.');
+    btn.disabled = false; btn.textContent = 'Sign In';
+  }
+}
+
+function showLoggedIn(user) {
+  document.getElementById('login-form-panel').style.display = 'none';
+  document.getElementById('logged-in-panel').style.display = 'block';
+
+  const initials = (user.full_name || user.username || '?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('user-avatar').textContent = initials;
+  document.getElementById('welcome-name').textContent = user.full_name || user.username;
+  document.getElementById('welcome-role').textContent = ROLE_LABELS[user.role] || user.role;
+
+  // Mark role card
+  selectRole(user.role);
+  // Unlock all role cards visually
+  document.querySelectorAll('.role-card-lock').forEach(el => el.textContent = '🔒');
+  const selectedCard = document.querySelector(`[data-role="${user.role}"] .role-card-lock`);
+  if (selectedCard) selectedCard.textContent = '✓';
+
+  // Build access list
+  const access = ROLE_ACCESS[user.role] || [];
+  document.getElementById('access-list').innerHTML = access.map(item => `
+    <a href="${item.href}" class="access-item">
+      <span class="access-item-icon">${item.icon}</span>
+      <span class="access-item-label">${item.label}</span>
+      <span class="access-item-arrow">→</span>
+    </a>
+  `).join('');
+}
+
+function doLogout() {
+  localStorage.removeItem('iris_user');
+  document.getElementById('login-form-panel').style.display = 'block';
+  document.getElementById('logged-in-panel').style.display = 'none';
+  document.getElementById('username-input').value = '';
+  document.getElementById('password-input').value = '';
+  document.getElementById('role-select').value = '';
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.role-card-lock').forEach(el => el.textContent = '🔒');
+  document.getElementById('login-btn').disabled = false;
+  document.getElementById('login-btn').textContent = 'Sign In';
+  selectedRole = '';
+}
+
+function showError(msg) {
+  const el = document.getElementById('login-error');
+  el.textContent = msg; el.classList.add('show');
+}
+</script>
+<script src="/static/js/iris-nav.js?v=20260314"></script>
+</body>
+</html>

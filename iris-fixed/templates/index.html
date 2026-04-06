@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IRIS – Integrated Regional Intelligence System</title>
+<link rel="stylesheet" href="/static/css/style.css?v=20260314">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">
+      <img src="{{ url_for('static', filename='images/national-emblem.svg') }}" alt="National Emblem">
+    </div>
+    <div>
+      <div class="nav-logo-text">IRIS</div>
+      <div class="nav-logo-sub">
+        Environmental Intelligence
+        <div class="nav-logo-sub-tricolour">भारत सरकार</div>
+      </div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/aqi">AQI</a>
+    <a href="/water">Water Quality</a>
+    <a href="/noise">Noise</a>
+    <a href="/emissions">Emissions</a>
+    <div id="nav-auth-zone"></div>
+  </div>
+</nav>
+
+<!-- Speak Your Concern Button -->
+<button id="voice-concern-btn" class="btn-secondary" style="position: fixed; top: 130px; right: 20px; z-index: 999; cursor: pointer;" title="Click to start speaking about an environmental concern">🎤 Speak Your Concern</button>
+
+<section class="hero">
+  <div id="hero-map" class="hero-map-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content fade-in">
+    <div class="hero-badge"><span class="hero-badge-dot"></span>Live Environmental Monitoring · India</div>
+    <h1>India's Environmental<br><span>Intelligence</span> Dashboard</h1>
+    <p class="hero-desc">Real-time air quality, water safety, noise levels, and greenhouse gas emission data across all 33 Indian states and union territories.</p>
+    <div class="hero-actions">
+      <a href="/aqi" class="btn-primary">Explore AQI Data</a>
+      <a href="/water" class="btn-secondary">Water Quality</a>
+      <a href="#" id="toggle-features" class="btn-secondary">Platform Features</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">33</div>
+        <div class="hero-stat-label">States Monitored</div>
+      </div>
+      <div>
+        <div class="hero-stat-num" id="stat-aqi">–</div>
+        <div class="hero-stat-label">Avg. AQI Today</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">30m</div>
+        <div class="hero-stat-label">Update Interval</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features-section" style="display:none; background:var(--bg); padding:40px 0;">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="section-label">Platform Features</div>
+    <h2 class="section-title">Built for Environmental Clarity</h2>
+    <p class="section-desc">A unified dashboard combining AI prediction, real-time data, and actionable insights for India's environmental health.</p>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">🧠</div><h3>AI Forecasting</h3><p>Regression-based AQI predictions for 3 days ahead. Water quality and emission forecasts up to 3 weeks out.</p></div>
+      <div class="feature-card"><div class="feature-icon">⚡</div><h3>Live Data Updates</h3><p>Environmental readings refreshed every 30 minutes via automated scheduler across all 33 states.</p></div>
+      <div class="feature-card"><div class="feature-icon">📊</div><h3>Full Transparency</h3><p>PM2.5, PM10, SO₂, CO, NO₂, water pH, TDS, fluoride, arsenic and greenhouse gases — all in one place.</p></div>
+      <div class="feature-card"><div class="feature-icon">🗺️</div><h3>State-Level Maps</h3><p>Interactive Leaflet maps with colour-coded markers for every state. Drill down to any region instantly.</p></div>
+      <div class="feature-card"><div class="feature-icon">💧</div><h3>Water Safety</h3><p>Groundwater quality indicators with WHO/BIS safe limit comparisons and three-week trend forecasts.</p></div>
+      <div class="feature-card"><div class="feature-icon">🚨</div><h3>Auto Alerts</h3><p>Automatic notifications when prescribed limits are exceeded. Escalation workflows to regional officers and authorities.</p></div>
+      <div class="feature-card"><div class="feature-icon">📋</div><h3>Compliance Tracking</h3><p>Non-compliance dashboard, missing report reminders, industrial monitoring logs, and periodic reports.</p></div>
+      <div class="feature-card"><div class="feature-icon">🏭</div><h3>Industry Registry</h3><p>Red, Orange, and Green category industries with geo-tagging, consent numbers, and regional office mapping.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- NATIONAL SNAPSHOT -->
+<section style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="section-label">Live Overview</div>
+    <h2 class="section-title">National Snapshot</h2>
+    <div class="data-grid">
+      <div class="data-metric"><div class="data-metric-label">Avg AQI</div><div class="data-metric-value" id="s-aqi">–</div><div class="data-metric-unit">Air Quality Index</div></div>
+      <div class="data-metric"><div class="data-metric-label">Avg pH</div><div class="data-metric-value" id="s-ph">–</div><div class="data-metric-unit">Water pH</div></div>
+      <div class="data-metric"><div class="data-metric-label">Avg Noise</div><div class="data-metric-value" id="s-db">–</div><div class="data-metric-unit">Decibels (dB)</div></div>
+      <div class="data-metric"><div class="data-metric-label">Avg CO₂</div><div class="data-metric-value" id="s-co2">–</div><div class="data-metric-unit">Mt per State</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MAJOR POLLUTANTS SECTION - AQI.IN INSPIRED -->
+<section style="background: linear-gradient(135deg, #fef9f3 0%, #fef6ed 100%); padding: 50px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div style="max-width:1200px; margin:0 auto; padding: 0 20px;">
+    <div class="section-label">Air Quality Monitoring</div>
+    <h2 class="section-title">Major Air Pollutants in India</h2>
+    <p class="section-desc">Real-time tracking of key air pollutants affecting millions across 33 states · All readings updated every 30 minutes</p>
+    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-top: 24px;">
+      <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; overflow: hidden; transition: all 0.3s ease;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: #ea580c;"></div>
+        <div style="font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">PM2.5</div>
+        <div style="font-size: 28px; font-weight: 800; color: var(--text); font-family: 'Roboto Mono', monospace; margin-bottom: 8px;" id="home-pm25">–</div>
+        <div style="font-size: 12px; color: var(--text-2); margin-bottom: 8px;">Fine Particles</div>
+        <div style="font-size: 10px; color: var(--text-3);">Safe ≤ 60 µg/m³</div>
+      </div>
+      <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; overflow: hidden; transition: all 0.3s ease;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: #dc2626;"></div>
+        <div style="font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">PM10</div>
+        <div style="font-size: 28px; font-weight: 800; color: var(--text); font-family: 'Roboto Mono', monospace; margin-bottom: 8px;" id="home-pm10">–</div>
+        <div style="font-size: 12px; color: var(--text-2); margin-bottom: 8px;">Coarse Particles</div>
+        <div style="font-size: 10px; color: var(--text-3);">Safe ≤ 100 µg/m³</div>
+      </div>
+      <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; overflow: hidden; transition: all 0.3s ease;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: #d97706;"></div>
+        <div style="font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">SO₂</div>
+        <div style="font-size: 28px; font-weight: 800; color: var(--text); font-family: 'Roboto Mono', monospace; margin-bottom: 8px;" id="home-so2">–</div>
+        <div style="font-size: 12px; color: var(--text-2); margin-bottom: 8px;">Sulphur Dioxide</div>
+        <div style="font-size: 10px; color: var(--text-3);">Safe ≤ 80 µg/m³</div>
+      </div>
+      <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; overflow: hidden; transition: all 0.3s ease;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: #7c3aed;"></div>
+        <div style="font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">CO</div>
+        <div style="font-size: 28px; font-weight: 800; color: var(--text); font-family: 'Roboto Mono', monospace; margin-bottom: 8px;" id="home-co">–</div>
+        <div style="font-size: 12px; color: var(--text-2); margin-bottom: 8px;">Carbon Monoxide</div>
+        <div style="font-size: 10px; color: var(--text-3);">Safe ≤ 4 mg/m³</div>
+      </div>
+      <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; overflow: hidden; transition: all 0.3s ease;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent);"></div>
+        <div style="font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">NO₂</div>
+        <div style="font-size: 28px; font-weight: 800; color: var(--text); font-family: 'Roboto Mono', monospace; margin-bottom: 8px;" id="home-no2">–</div>
+        <div style="font-size: 12px; color: var(--text-2); margin-bottom: 8px;">Nitrogen Dioxide</div>
+        <div style="font-size: 10px; color: var(--text-3);">Safe ≤ 40 µg/m³</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>🌍 <span>IRIS</span> — Integrated Regional Intelligence System &nbsp;·&nbsp; Environmental monitoring for India</p>
+  <p style="margin-top:6px;font-size:11.5px">Sources: CPCB · CGWB · CEEW · State Pollution Control Boards</p>
+
+</footer>
+
+<!-- FEEDBACK MODAL ─────────────────────────────────────────────────────── -->
+<div id="feedback-modal" class="feedback-modal">
+  <div class="feedback-modal-content">
+    <div class="feedback-modal-header">
+      <h2>Send Feedback</h2>
+      <button class="feedback-modal-close" id="feedback-modal-close">✕</button>
+    </div>
+    <form id="feedback-form" class="feedback-form">
+      <div class="feedback-form-group">
+        <label for="feedback-type">Feedback Type *</label>
+        <select id="feedback-type" name="type" required>
+          <option value="">Select Type</option>
+          <option value="suggestion">Suggestion</option>
+          <option value="bug">Bug Report</option>
+          <option value="feature">Feature Request</option>
+          <option value="praise">Praise</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="feedback-form-group">
+        <label for="feedback-state">Your State/Region (Optional)</label>
+        <select id="feedback-state" name="state">
+          <option value="">Select State</option>
+          <option value="Delhi">Delhi</option>
+          <option value="Maharashtra">Maharashtra</option>
+          <option value="Karnataka">Karnataka</option>
+          <option value="Tamil Nadu">Tamil Nadu</option>
+          <option value="Gujarat">Gujarat</option>
+          <option value="Rajasthan">Rajasthan</option>
+          <option value="Uttar Pradesh">Uttar Pradesh</option>
+          <option value="Madhya Pradesh">Madhya Pradesh</option>
+          <option value="West Bengal">West Bengal</option>
+          <option value="Bihar">Bihar</option>
+          <option value="Andhra Pradesh">Andhra Pradesh</option>
+          <option value="Telangana">Telangana</option>
+          <option value="Odisha">Odisha</option>
+          <option value="Kerala">Kerala</option>
+          <option value="Punjab">Punjab</option>
+          <option value="Haryana">Haryana</option>
+          <option value="Jharkhand">Jharkhand</option>
+          <option value="Assam">Assam</option>
+          <option value="Chhattisgarh">Chhattisgarh</option>
+          <option value="Uttarakhand">Uttarakhand</option>
+          <option value="Himachal Pradesh">Himachal Pradesh</option>
+          <option value="Goa">Goa</option>
+          <option value="Tripura">Tripura</option>
+          <option value="Meghalaya">Meghalaya</option>
+          <option value="Manipur">Manipur</option>
+          <option value="Nagaland">Nagaland</option>
+          <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+          <option value="Mizoram">Mizoram</option>
+          <option value="Sikkim">Sikkim</option>
+          <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+          <option value="Ladakh">Ladakh</option>
+          <option value="Puducherry">Puducherry</option>
+          <option value="Chandigarh">Chandigarh</option>
+        </select>
+      </div>
+      <div class="feedback-form-group">
+        <label for="feedback-email">Your Email (Optional)</label>
+        <input type="email" id="feedback-email" name="contact" placeholder="your.email@example.com">
+      </div>
+      <div class="feedback-form-group">
+        <label for="feedback-message">Your Message *</label>
+        <textarea id="feedback-message" name="message" placeholder="Please share your feedback, suggestion, or report (minimum 10 characters)…" rows="5" required></textarea>
+        <span class="feedback-char-count"><span id="feedback-char-count">0</span>/500</span>
+      </div>
+      <div class="feedback-form-actions">
+        <button type="button" class="btn-secondary" id="feedback-cancel">Cancel</button>
+        <button type="submit" class="btn-primary" id="feedback-submit">Send Feedback</button>
+      </div>
+    </form>
+    <div id="feedback-status" class="feedback-status" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- REPORT & EMERGENCY MODAL ─────────────────────────────────────────────────────── -->
+<div id="report-modal" class="report-modal">
+  <div class="report-modal-content">
+    <div class="report-modal-header">
+      <h2>Report Environmental Concern</h2>
+      <button class="report-modal-close" id="report-modal-close">✕</button>
+    </div>
+    <form id="report-form" class="report-form">
+      <div class="report-form-group">
+        <label for="report-type">Report Type *</label>
+        <select id="report-type" name="type" required>
+          <option value="">Select Type</option>
+          <option value="concern">Environmental Concern</option>
+          <option value="pollution">Pollution Incident</option>
+          <option value="incident">Environmental Incident</option>
+          <option value="emergency">EMERGENCY</option>
+        </select>
+      </div>
+      <div class="report-form-group">
+        <label for="report-severity">Severity Level *</label>
+        <select id="report-severity" name="severity" required>
+          <option value="low">Low - Minor Issue</option>
+          <option value="medium" selected>Medium - Noticeable</option>
+          <option value="high">High - Serious Concern</option>
+          <option value="critical">Critical - EMERGENCY</option>
+        </select>
+      </div>
+      <div class="report-form-group">
+        <label for="report-location">Location/Area *</label>
+        <input type="text" id="report-location" name="location" placeholder="City, neighborhood, or specific location" required>
+      </div>
+      <div class="report-form-group">
+        <label for="report-state">Your State/Region *</label>
+        <select id="report-state" name="state" required>
+          <option value="">Select State</option>
+          <option value="Delhi">Delhi</option>
+          <option value="Maharashtra">Maharashtra</option>
+          <option value="Karnataka">Karnataka</option>
+          <option value="Tamil Nadu">Tamil Nadu</option>
+          <option value="Gujarat">Gujarat</option>
+          <option value="Rajasthan">Rajasthan</option>
+          <option value="Uttar Pradesh">Uttar Pradesh</option>
+          <option value="Madhya Pradesh">Madhya Pradesh</option>
+          <option value="West Bengal">West Bengal</option>
+          <option value="Bihar">Bihar</option>
+          <option value="Andhra Pradesh">Andhra Pradesh</option>
+          <option value="Telangana">Telangana</option>
+          <option value="Odisha">Odisha</option>
+          <option value="Kerala">Kerala</option>
+          <option value="Punjab">Punjab</option>
+          <option value="Haryana">Haryana</option>
+          <option value="Jharkhand">Jharkhand</option>
+          <option value="Assam">Assam</option>
+          <option value="Chhattisgarh">Chhattisgarh</option>
+          <option value="Uttarakhand">Uttarakhand</option>
+          <option value="Himachal Pradesh">Himachal Pradesh</option>
+          <option value="Goa">Goa</option>
+          <option value="Tripura">Tripura</option>
+          <option value="Meghalaya">Meghalaya</option>
+          <option value="Manipur">Manipur</option>
+          <option value="Nagaland">Nagaland</option>
+          <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+          <option value="Mizoram">Mizoram</option>
+          <option value="Sikkim">Sikkim</option>
+          <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+          <option value="Ladakh">Ladakh</option>
+          <option value="Puducherry">Puducherry</option>
+          <option value="Chandigarh">Chandigarh</option>
+        </select>
+      </div>
+      <div class="report-form-group">
+        <label for="report-description">Description of Concern *</label>
+        <textarea id="report-description" name="description" placeholder="Describe what you observed (pollution, dumping, unusual odor, health impacts, etc). Minimum 10 characters." rows="5" required></textarea>
+        <span class="report-char-count"><span id="report-char-count">0</span>/1000</span>
+      </div>
+      <div class="report-form-group">
+        <label for="report-phone">Contact Phone (For Emergency Response)</label>
+        <input type="tel" id="report-phone" name="phone" placeholder="Your phone number for follow-up">
+      </div>
+      <div class="report-form-group">
+        <label for="report-email">Contact Email</label>
+        <input type="email" id="report-email" name="email" placeholder="your.email@example.com">
+      </div>
+      <div class="report-form-actions">
+        <button type="button" class="btn-secondary" id="report-cancel">Cancel</button>
+        <button type="submit" class="btn-primary" id="report-submit">Submit Report</button>
+      </div>
+    </form>
+    <div id="report-status" class="report-status" style="display:none;"></div>
+  </div>
+</div>
+
+<div class="update-ticker"><span class="ticker-live">● LIVE</span><span>IRIS Environmental Intelligence · Last refresh: <span class="ticker-time"></span> · Updates every 30 min</span></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="/static/js/main.js?v=20260314"></script>
+<script src="/static/js/map.js?v=20260314"></script>
+<script>
+// Initialize hero background map with user's current location
+async function initHeroMap() {
+  const mapEl = document.getElementById('hero-map');
+  if (!mapEl) return;
+  
+  // Default to India center if geolocation fails
+  let lat = 20.5937, lng = 78.9629, zoom = 5;
+  
+  // Try to get user's location
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        lat = position.coords.latitude;
+        lng = position.coords.longitude;
+        zoom = 10;
+        createHeroMap(lat, lng, zoom);
+      },
+      (error) => {
+        console.log('Using default India location');
+        createHeroMap(lat, lng, zoom);
+      },
+      { timeout: 5000 }
+    );
+  } else {
+    createHeroMap(lat, lng, zoom);
+  }
+}
+
+function createHeroMap(lat, lng, zoom) {
+  const map = L.map('hero-map', {
+    center: [lat, lng],
+    zoom: zoom,
+    scrollWheelZoom: false,
+    dragging: false,
+    touchZoom: false,
+    doubleClickZoom: false,
+    boxZoom: false,
+    keyboard: false,
+    zoomControl: false
+  });
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap',
+    maxZoom: 19
+  }).addTo(map);
+  
+  // Add current location marker
+  L.circleMarker([lat, lng], {
+    radius: 8,
+    fillColor: '#0969da',
+    color: '#fff',
+    weight: 3,
+    opacity: 1,
+    fillOpacity: 0.9
+  }).addTo(map).bindPopup('Your Location');
+}
+
+(async () => {
+  // Initialize hero map
+  initHeroMap();
+  
+  const s = await fetchData('/api/summary');
+  if (s) {
+    document.getElementById('s-aqi').textContent  = Math.round(s.aqi?.avg_aqi||0);
+    document.getElementById('s-ph').textContent   = formatNum(s.water?.avg_ph,2);
+    document.getElementById('s-db').textContent   = formatNum(s.noise?.avg_db,1);
+    document.getElementById('s-co2').textContent  = formatNum(s.emissions?.avg_co2,1);
+    document.getElementById('stat-aqi').textContent = Math.round(s.aqi?.avg_aqi||0);
+  }
+  const data = await fetchData('/api/aqi');
+  if (data && data.length > 0) {
+    const avg = (arr) => arr.reduce((a, b) => a + (Number(b) || 0), 0) / arr.length;
+    const avgPm25 = Math.round(avg(data.map(d => d.pm25)));
+    const avgPm10 = Math.round(avg(data.map(d => d.pm10)));
+    const avgSo2 = Math.round(avg(data.map(d => d.so2)));
+    const avgCo = (avg(data.map(d => d.co))).toFixed(2);
+    const avgNo2 = Math.round(avg(data.map(d => d.no2)));
+    const el = (id) => document.getElementById(id);
+    if (el('home-pm25')) el('home-pm25').textContent = avgPm25;
+    if (el('home-pm10')) el('home-pm10').textContent = avgPm10;
+    if (el('home-so2')) el('home-so2').textContent = avgSo2;
+    if (el('home-co')) el('home-co').textContent = avgCo;
+    if (el('home-no2')) el('home-no2').textContent = avgNo2;
+  }
+})();
+document.getElementById('toggle-features').addEventListener('click', function(e) {
+  e.preventDefault();
+  const sec = document.getElementById('features-section');
+  sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
+});
+</script>
+<script src="/static/js/iris-alerts.js?v=20260314"></script>
+<script src="/static/js/iris-nav.js?v=20260314"></script>
+<script src="/static/js/feedback.js?v=20260314"></script>
+<script src="/static/js/report.js?v=20260314"></script>
+<script src="/static/js/chatbot.js?v=20260314"></script>
+<script src="/static/js/voice-concern.js?v=20260314"></script>
+<script src="/static/js/location-tracker.js?v=20260314"></script>
+  </body>
+</html>

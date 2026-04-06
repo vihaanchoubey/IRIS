@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IRIS – Verify Email</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<style>
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 72px 20px 40px;
+  background: var(--bg);
+}
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-lg);
+  padding: 40px;
+}
+.auth-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.auth-logo-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.auth-logo-text { font-size: 18px; font-weight: 700; color: var(--text); }
+.auth-logo-sub  { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; font-weight: 500; }
+
+.auth-title { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.auth-sub   { font-size: 13px; color: var(--text-2); margin-bottom: 28px; line-height: 1.5; }
+
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block; font-size: 11.5px; font-weight: 600;
+  color: var(--text-2); text-transform: uppercase; letter-spacing: .5px;
+  margin-bottom: 6px;
+}
+.form-group input {
+  width: 100%; background: var(--surface-alt);
+  border: 1px solid var(--border); border-radius: var(--r);
+  padding: 9px 12px; font-size: 13.5px;
+  font-family: 'Inter', sans-serif; color: var(--text); outline: none;
+  box-sizing: border-box;
+  transition: border-color .12s, box-shadow .12s;
+}
+.form-group input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(9,105,218,.12);
+}
+.form-group input::placeholder { color: var(--text-3); }
+
+.auth-btn {
+  width: 100%; padding: 11px; background: var(--accent);
+  color: #fff; border: none; border-radius: var(--r-md);
+  font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif;
+  cursor: pointer; margin-top: 4px;
+  transition: background .12s, box-shadow .12s;
+  box-shadow: 0 1px 4px rgba(9,105,218,.3);
+}
+.auth-btn:hover { background: var(--accent-hover); box-shadow: var(--sh-md); }
+.auth-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+.auth-error {
+  background: var(--red-bg); color: var(--red);
+  border: 1px solid #f5c1c1; border-radius: var(--r);
+  padding: 9px 12px; font-size: 13px; font-weight: 500;
+  margin-bottom: 14px; display: none;
+}
+.auth-error.show { display: block; }
+
+.auth-success {
+  background: #eafbf0; color: #1a7f4b;
+  border: 1px solid #a7e3c0; border-radius: var(--r);
+  padding: 9px 12px; font-size: 13px; font-weight: 500;
+  margin-bottom: 14px; display: none;
+  text-align: center;
+}
+.auth-success.show { display: block; }
+
+.auth-footer {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.auth-footer a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+.auth-footer a:hover { text-decoration: underline; }
+
+.divider {
+  display: flex; align-items: center; gap: 10px;
+  margin: 20px 0; color: var(--text-3); font-size: 12px;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border-soft);
+}
+
+.otp-info {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 12px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+@media(max-width: 480px) {
+  .auth-card { padding: 28px 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">
+      <img src="{{ url_for('static', filename='images/national-emblem.svg') }}" alt="National Emblem">
+    </div>
+    <div>
+      <div class="nav-logo-text">IRIS</div>
+      <div class="nav-logo-sub">
+        Environmental Intelligence
+        <div class="nav-logo-sub-tricolour">भारत सरकार</div>
+      </div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/aqi">AQI</a>
+    <a href="/water">Water Quality</a>
+    <a href="/noise">Noise</a>
+    <a href="/emissions">Emissions</a>
+
+    <div id="nav-auth-zone"></div>
+  </div>
+</nav>
+
+<div class="auth-page">
+  <div class="auth-card">
+
+    <div class="auth-logo">
+      <div class="auth-logo-icon">✉️</div>
+      <div>
+        <div class="auth-logo-text">IRIS</div>
+        <div class="auth-logo-sub">Environmental Intelligence</div>
+      </div>
+    </div>
+
+    <div class="auth-title">Verify Your Email</div>
+    <div class="auth-sub" id="email-display">An OTP has been sent to your email address. Please enter it below.</div>
+
+    <div class="auth-error" id="verify-error"></div>
+    <div class="auth-success" id="verify-success">✅ Email verified successfully! Redirecting to login…</div>
+
+    <div class="otp-info">
+      <strong>OTP valid for 10 minutes</strong><br>
+      If you don't see the OTP, check your spam folder or request a new one.
+    </div>
+
+    <div class="form-group">
+      <label>Enter 6-Digit OTP</label>
+      <input type="text" id="otp" placeholder="000000" maxlength="6" autocomplete="off">
+    </div>
+
+    <button class="auth-btn" id="verify-btn" onclick="verifyOTP()">Verify OTP</button>
+
+    <div class="divider">or</div>
+
+    <div class="auth-footer">
+      Didn't receive OTP? <a href="#" onclick="resendOTP(); return false;">Resend OTP</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const userId = params.get('user_id');
+const email = params.get('email');
+
+if (!userId || !email) {
+  document.getElementById('verify-error').textContent = 'Invalid verification link.';
+  document.getElementById('verify-error').classList.add('show');
+  document.getElementById('verify-btn').disabled = true;
+}
+
+document.getElementById('email-display').textContent = `An OTP has been sent to ${email}. Please enter it below.`;
+
+async function verifyOTP() {
+  const otp = document.getElementById('otp').value.trim();
+  
+  if (!otp) {
+    showError('Please enter the OTP.');
+    return;
+  }
+  
+  if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
+    showError('OTP must be 6 digits.');
+    return;
+  }
+  
+  const btn = document.getElementById('verify-btn');
+  btn.disabled = true;
+  btn.textContent = 'Verifying…';
+  
+  try {
+    const res = await fetch('/api/auth/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId, otp: otp })
+    });
+    const data = await res.json();
+    
+    if (!res.ok || data.error) {
+      showError(data.error || 'Verification failed. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Verify OTP';
+      return;
+    }
+    
+    document.getElementById('verify-success').classList.add('show');
+    setTimeout(() => { window.location.href = '/login'; }, 2000);
+    
+  } catch(e) {
+    showError('Connection error. Please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Verify OTP';
+  }
+}
+
+async function resendOTP() {
+  const btn = event.target;
+  btn.textContent = 'Sending…';
+  btn.style.pointerEvents = 'none';
+  
+  try {
+    const res = await fetch('/api/auth/resend-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId })
+    });
+    const data = await res.json();
+    
+    if (!res.ok || data.error) {
+      showError(data.error || 'Failed to resend OTP.');
+      btn.textContent = 'Resend OTP';
+      btn.style.pointerEvents = 'auto';
+      return;
+    }
+    
+    alert('New OTP sent to your email.');
+    btn.textContent = 'Resend OTP';
+    btn.style.pointerEvents = 'auto';
+    
+  } catch(e) {
+    showError('Connection error. Please try again.');
+    btn.textContent = 'Resend OTP';
+    btn.style.pointerEvents = 'auto';
+  }
+}
+
+function showError(msg) {
+  const err = document.getElementById('verify-error');
+  err.textContent = msg;
+  err.classList.add('show');
+  setTimeout(() => err.classList.remove('show'), 5000);
+}
+
+document.getElementById('otp').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') verifyOTP();
+});
+</script>
+
+</body>
+</html>

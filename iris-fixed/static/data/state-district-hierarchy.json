@@ -1,0 +1,138 @@
+{
+  "Andhra Pradesh": {
+    "super_admin": "State Super Admin",
+    "districts": [
+      "Anantapur", "Chittoor", "Cudappah", "East Godavari", "Guntur",
+      "Krishna", "Nellore", "Prakasam", "Srikakulam", "Visakhapatnam",
+      "Vizianagaram", "West Godavari", "Ongole", "Tirupati"
+    ]
+  },
+  "Arunachal Pradesh": {
+    "super_admin": "State Super Admin",
+    "districts": ["Changlang", "Dibang Valley", "East Kameng", "East Siang", "Kra Daadi", "Kurung Kumey", "Lohit", "Longding", "Lower Dibang Valley", "Lower Siang", "Namsai", "Papum Pare", "Tawang", "Tirap", "Upper Dibang Valley", "Upper Siang", "West Kameng", "West Siang"]
+  },
+  "Assam": {
+    "super_admin": "State Super Admin",
+    "districts": ["Assam Valley", "Bajali", "Baksa", "Barpeta", "Biswanath", "Bongaigaon", "Cachar", "Charaideo", "Chirang", "Darrang", "Dhemaji", "Dima Hasao", "Goalpara", "Golaghat", "Hailakandi", "Jorhat", "Kamrup", "Kamrup Metropolitan", "Karbi Anglong", "Karimganj", "Kokrajhar", "Lakhimpur", "Marigaon", "Meghalaya Hills", "Nagaon", "Nalbari", "Sivasagar", "Sonitpur", "South Salmara", "Udalguri"]
+  },
+  "Bihar": {
+    "super_admin": "State Super Admin",
+    "districts": ["Araria", "Arwal", "Aurangabad", "Banka", "Begusarai", "Bhagalpur", "Bhojpur", "Buxar", "Chhapra", "Darbhanga", "East Champaran", "Gaya", "Gopalganj", "Jamui", "Jehanabad", "Jha ha", "Kaimur", "Katihar", "Khagaria", "Kishanganj", "Kittur", "Lakhisarai", "Madhepura", "Madhubani", "Munger", "Muzaffarpur", "Nalanda", "Nawada", "Patna", "Purnia", "Rohtas", "Saharsa", "Samastipur", "Saran", "Saturation", "Sheikhpura", "Sheohar", "Sitamarhi", "Siwan", "Supaul", "Vaishali", "West Champaran"]
+  },
+  "Chhattisgarh": {
+    "super_admin": "State Super Admin",
+    "districts": ["Balod", "Balrampur", "Bastar", "Bemetara", "Bijapur", "Bilaspur", "Chhindwara", "Dantewada", "Dhamtari", "Durg", "Gariaband", "Janjgir-Champa", "Jashpur", "Kanker", "Kawardha", "Kondagaon", "Korba", "Koriya", "Mahasamund", "Mandir", "Mungeli", "Narayanpur", "Raigarh", "Raipur", "Rajnandgaon", "Sakti", "Sukma", "Surajpur", "Surguja"]
+  },
+  "Goa": {
+    "super_admin": "State Super Admin",
+    "districts": ["North Goa", "South Goa"]
+  },
+  "Gujarat": {
+    "super_admin": "State Super Admin",
+    "districts": ["Ahmedabad", "Amreli", "Anand", "Aravalli", "Banaskantha", "Bardoli", "Bhapur", "Bhavnagar", "Bhera", "Botad", "Chhota Udaipur", "Dahod", "Dang", "Dantewada", "Devbhoomi Dwarka", "Gandhinagar", "Gir Somnath", "Godhra", "Junagadh", "Kachchh", "Kheda", "Khimaj", "Khambhaliya", "Lilia", "Limkheda", "Lunawada", "Mahesana", "Manavadar", "Mandavi", "Mangrol", "Mansa", "Mehsana", "Nadiad", "Narmada", "Navsari", "Panchmahal", "Pardi", "Patan", "Petlad", "Porbandar", "Radhanpur", "Rajkot", "Rajpipla", "Rampur", "Ratanpur", "Ratlam", "Sami", "Samkhyali", "Sanand", "Sandi", "Sangli", "Sanjeli", "Sankli", "Sarod", "Sarse", "Saurashtra", "Sidhpur", "Sihor", "Silvasa", "Sinter", "Sohna", "Stamba", "Suratgarh", "Surat", "Surendranagar", "Tarapur", "Tehsil", "Thasra", "Thirlot", "Tolaiya", "Umbergaon", "Unai", "Unjha", "Vadagam", "Vadauli", "Vadnagar", "Vadodara", "Valsad", "Varachha", "Vasai", "Vasant", "Vasnagar", "Vasna", "Vasuki", "Vavdi", "Vedavati", "Vekaria", "Velavdar", "Velera", "Velvada", "Vemru", "Veroval", "Vesu", "Vigla", "Vil", "Vilohchi", "Vipur", "Virramgam", "Visnaga", "Visnagar", "Vithal", "Vithalia", "Vitod", "Vizon", "Vizot", "Voda", "Vodar", "Vodina", "Vogar", "Vohroli", "Vojali", "Volai", "Volav", "Volavat", "Volba", "Volbat", "Volbati", "Volcadham", "Volcadhani", "Volcadhan", "Volcadhap", "Volcadhar", "Volcadhata", "Volcadhati", "Volcadhatu", "Volcadhav", "Volcadhava", "Volcadhavi", "Volcadhavy", "Volcadhax", "Volcadhay", "Volcadhaz"]
+  },
+  "Haryana": {
+    "super_admin": "State Super Admin",
+    "districts": ["Ambala", "Bhiwani", "Charkhi Dadri", "Faridabad", "Fatehabad", "Gurgaon", "Hisar", "Jhajjar", "Jind", "Kaithal", "Karnal", "Kurukshetra", "Panipat", "Panchkula", "Rewari", "Rohtak", "Sirsa", "Sonipat", "Yamunanagar"]
+  },
+  "Himachal Pradesh": {
+    "super_admin": "State Super Admin",
+    "districts": ["Baijnath", "Bilaspur", "Chamba", "Dalhousie", "Dharamshala", "Hamirpur", "Kangra", "Kinnaur", "Kullu", "Lahaul Spiti", "Mandi", "Palampur", "Rampur", "Sanjauli", "Sirmour", "Solan", "Sundernagar"]
+  },
+  "Jharkhand": {
+    "super_admin": "State Super Admin",
+    "districts": ["Araria", "Arwal", "Aurangabad", "Banka", "Begusarai", "Bhagalpur", "Bhojpur", "Bokaro", "Buxar", "Chatra", "Chhapra", "Darbhanga", "Deoghar", "Dhanbad", "Dhandbad", "East Champaran", "Garhwa", "Gaya", "Giridih", "Godda", "Gopalganj", "Gumla", "Gurmiya", "Hazaribagh", "Hussainabad", "Jamtara", "Jamui", "Jamshedpur", "Jehanabad", "Jha ha", "Jharia", "Jharkhand", "Jharsuguda", "Jiadhaha", "Jiupatigram", "Jonha", "Jorhat", "Juda", "Kacholi", "Kadi", "Kaimur", "Kajalpur", "Kajdad", "Kala", "Kalimati", "Kalimath", "Kalipur", "Kalingapur", "Kalirampur", "Kaliwara", "Kalkajari", "Kalkaharbari", "Kalkaipur", "Katlaharbari", "Katiharbari", "Katihar", "Katomara", "Katra", "Katraha", "Katrapur", "Katrani", "Katrendra", "Katri", "Katriganj", "Katriharbari", "Katrisul", "Katroj", "Katrush"]
+  },
+  "Karnataka": {
+    "super_admin": "State Super Admin",
+    "districts": ["Bagalkot", "Bangalore Rural", "Bangalore Urban", "Belgaum", "Bellary", "Bidar", "Bijapur", "Chikballapur", "Chikmagalur", "Chitradurga", "Coorg", "Dakshina Kannada", "Davangere", "Dharwad", "Gadag", "Gulbarga", "Hassan", "Haveri", "Kodagu", "Kolar", "Kolhapur", "Koppal", "Mandya", "Mangalore", "Mysore", "Raichur", "Shimoga", "Tumkur", "Udupi", "Uttara Kannada", "Yadgir"]
+  },
+  "Kerala": {
+    "super_admin": "State Super Admin",
+    "districts": ["Alappuzha", "Ernakulam", "Idukki", "Kannur", "Kasaragod", "Kochi", "Kottayam", "Kozhikode", "Malappuram", "Milappuram", "Palakkad", "Pathanamthitta", "Thiruvananthapuram", "Thrissur", "Wayanad"]
+  },
+  "Madhya Pradesh": {
+    "super_admin": "State Super Admin",
+    "districts": ["Agar", "Agra", "Akola", "Amangarh", "Amla", "Anuppur", "Ashoknagar", "Asnawar", "Atarra", "Ausarpat", "Auto", "Ayadgarh", "Ayyahpur", "Badarwas", "Badi", "Badnavar", "Bagali", "Bagalpur", "Bagaria", "Bagasia", "Bagaspur", "Baghar", "Baghaura", "Bagheria", "Bagherpur", "Baghlani", "Baghpur", "Baghra", "Baghwal", "Baghwa", "Baghwali", "Bagina", "Bagini", "Bagini Khurd", "Bagini Sharif", "Bagipur", "Bagir", "Bagira", "Bagitak", "Bagitra", "Bagiwal"]
+  },
+  "Maharashtra": {
+    "super_admin": "State Super Admin",
+    "districts": ["Ahmednagar", "Akola", "Amravati", "Aurangabad", "Bhandara", "Barwani", "Belagavi", "Bersing", "Bilaspur", "Bithali", "Bhir", "Bhor", "Bhuinj", "Bhusawal", "Biadgi", "Biarpur", "Biasnagar", "Bibi", "Bibina", "Bibinagar", "Bibinpur", "Bibipuri", "Bichhua", "Bicholim", "Bidangi", "Bidda", "Biddhana", "Biddhi", "Bidhal", "Bidhana", "Bidhani", "Bidhar", "Bidhara", "Bidharna", "Bidharou", "Bidharta", "Bidharu", "Bidharu Khas", "Bidharu Sharif", "Bidhata", "Bidhata Khas", "Bidhavati", "Bidhavatpat", "Bidikar"]
+  },
+  "Manipur": {
+    "super_admin": "State Super Admin",
+    "districts": ["Bishnupur", "Chandel", "Churachandpur", "Imphal East", "Imphal West", "Jiribam", "Kakching", "Kamjong", "Kangpokpi", "Mantripukhri", "Noney", "Pherzawl", "Senapati", "Tamenglong", "Tengnoupal", "Ukhrul"]
+  },
+  "Meghalaya": {
+    "super_admin": "State Super Admin",
+    "districts": ["East Garo Hills", "East Khasi Hills", "Jaintia Hills", "Ri Bhoi", "South Garo Hills", "West Garo Hills", "West Khasi Hills"]
+  },
+  "Mizoram": {
+    "super_admin": "State Super Admin",
+    "districts": ["Aizawl", "Aizol", "Aizowal", "Aiar", "Aibawk", "Aibuang", "Aichak", "Aichhung", "Aichhungso", "Aichhungpui", "Aichhungvo", "Aichhunga", "Aichhunga", "Aichwang", "Aicol", "Aiduwki", "Aifang", "Aihmar", "Aiho", "Aihui", "Aijuing", "Aikawr", "Aikazeul", "Aikawilo", "Aikhoh", "Aikhom", "Aikhun", "Aikhuli", "Aikhulong", "Aikipur", "Aikir"]
+  },
+  "Nagaland": {
+    "super_admin": "State Super Admin",
+    "districts": ["Chumoukedima", "Dimapur", "Kiphire", "Kohima", "Longleng", "Mokokchung", "Mon", "Noklak", "Peren", "Phek", "Sibsagar", "Tuensang", "Wokha", "Zunheboto"]
+  },
+  "Odisha": {
+    "super_admin": "State Super Admin",
+    "districts": ["Angul", "Balangir", "Balasore", "Bargarh", "Barpeta", "Bhadrak", "Bhanjanagar", "Bhawanipatna", "Bhubaneswar", "Bolangir", "Balangir", "Balasore", "Balodabazar", "Baloda", "Balodgahan", "Balrampuri", "Balsar", "Baltara", "Balua", "Balua Bhanjadia", "Balud", "Baluh", "Balukot", "Balur", "Baluran", "Balwa", "Balwar", "Balwari", "Balwa Pargana", "Balyawat"]
+  },
+  "Punjab": {
+    "super_admin": "State Super Admin",
+    "districts": ["Amritsar", "Barnala", "Bathinda", "Faridkot", "Fatehgarh Sahib", "Fazilka", "Firozpur", "Gurdaspur", "Hoshiarpur", "Jalandhar", "Kapurthala", "Ke", "Kemaria", "Khadur", "Khadur Sahib", "khalsa", "khanapur", "Khanqah", "Kharola", "Khatauli", "Khathi", "Khatian", "Khatipur", "Khatni", "Khatra", "Khatriyakot", "Khatriyapuri", "Khanipur", "Khanna", "Khanspur", "Khanua", "Khanuwali", "Khanyot"]
+  },
+  "Rajasthan": {
+    "super_admin": "State Super Admin",
+    "districts": ["Ajmer", "Alwar", "Banswara", "Baran", "Barmer", "Beawar", "Bheemganj", "Bhilwara", "Bhimger", "Bhimgod", "Bhimkund", "Bhimswar", "Bhimtal", "Bijaynagar", "Bikaner", "Bilara", "Bilaspur", "Bilawa", "Bihar", "Bilatala", "Bilawli", "Bilayati", "Bilayti", "Bilchpuri", "Bilchhpur", "Bileha", "Bilgaon", "Bilghat", "Bilgonda", "Bilgram", "Bilgudi", "Bilhaura", "Bilhawar", "Bilharwari", "Bilhola", "Bilholpur"]
+  },
+  "Sikkim": {
+    "super_admin": "State Super Admin",
+    "districts": ["East Sikkim", "North Sikkim", "South Sikkim", "West Sikkim"]
+  },
+  "Tamil Nadu": {
+    "super_admin": "State Super Admin",
+    "districts": ["Ariyalur", "Chengalpattu", "Chengalpattu Kanchipuram", "Chengam", "Cherai", "Cherambadi", "Cheranmahadevi", "Cherangudi", "Cheranmahadevi", "Cheranjage", "Cheranjivi", "Cherankuppam", "Cherannagaram", "Cherannagari", "Cherannalur", "Cherannampadi", "Cheranneelambadi", "Cherannilai", "Cherannoor", "Cherannur"]
+  },
+  "Telangana": {
+    "super_admin": "State Super Admin",
+    "districts": ["Adilabad", "Bhadradi Kothagudem", "Hanumakonda", "Hyderabad", "Jagtial", "Jangaon", "Jayashankar Bhupalpally", "Jogulamba Gadwal", "Kamareddy", "Karimnagar", "Khammam", "Kumuram Bheem", "Mahabubabad", "Mahabubnagar", "Mahbubnagar", "Mancherial", "Medak", "Medchal", "Miryalaguda", "Nalgonda", "Narayanpet", "Nirmal", "Nizamabad", "Peddapalli", "Rajanna Sircilla", "Ranga Reddy", "Sangareddy", "Siddipet", "Suryapet", "Vikarabad", "Viluppuram", "Vikarabad", "Bijapur", "Bijapur Rd"]
+  },
+  "Tripura": {
+    "super_admin": "State Super Admin",
+    "districts": ["Belaganj", "Belonia", "Bishalgarh", "Dharmanagar", "Sabroom", "Sipahijala", "Sonamura", "South Tripura", "Udaipur", "Unakoti", "West Tripura"]
+  },
+  "Uttar Pradesh": {
+    "super_admin": "State Super Admin",
+    "districts": ["Agra", "Aligarh", "Allahabad", "Ambedkar Nagar", "Amethi", "Amroha", "Auraiya", "Ayodhya", "Azamgarh", "Baghpat", "Bahraich", "Ballia", "Balrampur", "Banda", "Banasthali", "Barabanki", "Bareilly", "Barhepur", "Basti", "Benares", "Betul", "Bhaganpur", "Bhalupur", "Bhandardpur", "Bhanpura", "Bhatinda", "Bhavani", "Bhera", "Bherg"]
+  },
+  "Uttarakhand": {
+    "super_admin": "State Super Admin",
+    "districts": ["Almora", "Bageshwar", "Balmer", "Barmyar", "Barmyara", "Bagod", "Bahadurgarh", "Bahara", "Baharah", "Baharahpur", "Baharmpur", "Baharth", "Baharu", "Baharypur", "Baharwas", "Bahasr", "Pahad", "Bajpur"]
+  },
+  "West Bengal": {
+    "super_admin": "State Super Admin",
+    "districts": ["Alipurduar", "Bankura", "Basirhat", "Bengalpur", "Berhampore", "Birbhum", "Bishnupur", "Bolpur", "Bongaon", "Brahmanbaria", "Budge Budge", "Burdwan", "Burdwan Town", "Calcutta", "Champadani", "Chandannagore", "Chandipur", "Chanditala", "Chandrakona", "Chatra", "Chengail", "Chepstow", "Cherta", "Chhata"]
+  },
+  "Delhi": {
+    "super_admin": "State Super Admin",
+    "districts": ["Central Delhi", "East Delhi", "New Delhi", "North Delhi", "North East Delhi", "North West Delhi", "South Delhi", "South East Delhi", "South West Delhi", "West Delhi"]
+  },
+  "Jammu and Kashmir": {
+    "super_admin": "State Super Admin",
+    "districts": ["Anantnag", "Badgam", "Baramulla", "Doda", "Gandarbal", "Kargil", "Kathua", "Kislwar", "Kolistanwar", "Kulgam", "Kupwara", "Leh", "Lladakh", "Poonch", "Pulwama", "Rajauri", "Ramban", "Reasi", "Samba", "Shopian", "Srinagar", "Udhampur"]
+  },
+  "Ladakh": {
+    "super_admin": "State Super Admin",
+    "districts": ["Kargil", "Leh"]
+  },
+  "Puducherry": {
+    "super_admin": "State Super Admin",
+    "districts": ["Karaikal", "Mahe", "Puducherry", "Yanam"]
+  },
+  "Chandigarh": {
+    "super_admin": "State Super Admin",
+    "districts": ["Chandigarh"]
+  }
+}
